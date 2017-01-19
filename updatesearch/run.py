@@ -53,16 +53,80 @@ class UpdateSearch(object):
     Process to get article in article meta and index in Solr.
     """
 
-    def __init__(self, period=None, from_date=None, until_date=None, collection=None, issn=None, delete=False, sanitization=False):
-        self.delete = delete
-        self.sanitization = sanitization
-        self.collection = collection
-        self.from_date = from_date
-        self.until_date = until_date
-        self.issn = issn
-        self.solr = Solr(SOLR_URL, timeout=10)
-        if period:
-            from_date = datetime.now() - timedelta(days=period)
+(??)    usage = """\
+(??)    Process to index article to SciELO Solr.
+(??)
+(??)    This process collects articles in the Article meta using thrift and index
+(??)    in SciELO Solr.
+(??)
+(??)    With this process it is possible to process all the article or some specific
+(??)    by collection, issn from date to until another date and a period like 7 days.
+(??)    """
+(??)
+(??)    parser = argparse.ArgumentParser(textwrap.dedent(usage))
+(??)
+(??)    parser.add_argument('-p', '--period',
+(??)                        type=int,
+(??)                        help='index articles from specific period, use number of days.')
+(??)
+(??)    parser.add_argument('-f', '--from',
+(??)                        dest='from_date',
+(??)                        type=lambda x: datetime.strptime(x, '%Y-%m-%d'),
+(??)                        nargs='?',
+(??)                        help='index articles from specific date. YYYY-MM-DD.')
+(??)
+(??)    parser.add_argument('-u', '--until',
+(??)                        dest='until_date',
+(??)                        type=lambda x: datetime.strptime(x, '%Y-%m-%d'),
+(??)                        nargs='?',
+(??)                        help='index articles until this specific date. YYYY-MM-DD (default today).',
+(??)                        default=datetime.now())
+(??)
+(??)    parser.add_argument('-c', '--collection',
+(??)                        dest='collection',
+(??)                        default=None,
+(??)                        help='use the acronym of the collection eg.: spa, scl, col.')
+(??)
+(??)    parser.add_argument('-i', '--issn',
+(??)                        dest='issn',
+(??)                        default=None,
+(??)                        help='journal issn.')
+(??)
+(??)    parser.add_argument('-d', '--delete',
+(??)                        dest='delete',
+(??)                        default=None,
+(??)                        help='delete query ex.: q=*:* (Lucene Syntax).')
+(??)
+(??)    parser.add_argument('-s', '--sanitization',
+(??)                        dest='sanitization',
+(??)                        default=False,
+(??)                        action='store_true',
+(??)                        help='Remove objects from the index that are no longer present in the database.')
+(??)
+(??)    parser.add_argument('-url', '--url',
+(??)                        dest='solr_url',
+(??)                        help='Solr RESTFul URL, processing try to get the variable from environment ``SOLR_URL`` otherwise use --url to set the url(preferable).')
+(??)
+(??)    parser.add_argument('-v', '--version',
+(??)                        action='version',
+(??)                        version='version: 0.2')
+(??)
+(??)    def __init__(self):
+(??)
+(??)        self.args = self.parser.parse_args()
+(??)
+(??)        solr_url = os.environ.get('SOLR_URL')
+(??)
+(??)        if not solr_url and not self.args.solr_url:
+(??)            raise argparse.ArgumentTypeError('--url or ``SOLR_URL`` enviroment variable must be the set, use --help.')
+(??)
+(??)        if not solr_url:
+(??)            self.solr = Solr(self.args.solr_url, timeout=10)
+(??)        else:
+(??)            self.solr = Solr(solr_url, timeout=10)
+(??)
+(??)        if self.args.period:
+(??)            self.args.from_date = datetime.now() - timedelta(days=self.args.period)
 
     def format_date(self, date):
         """
