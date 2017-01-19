@@ -38,6 +38,6 @@ setup(
     install_requires=install_requires,
     entry_points="""
     [console_scripts]
-    update_search=updatesearch.dumpdata:main
+    update_search=updatesearch.run:main
     """
 )
