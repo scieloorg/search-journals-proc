@@ -56,7 +56,7 @@ class UpdateSearch(object):
     def __init__(self, period=None, from_date=None, until_date=None, collection=None, issn=None, delete=False, sanitization=False):
         self.delete = delete
         self.sanitization = sanitization
-        self.collection = collections
+        self.collection = collection
         self.from_date = from_date
         self.until_date = until_date
         self.issn = issn
@@ -189,6 +189,7 @@ class UpdateSearch(object):
                 until_date=self.format_date(self.until_date)
             ):
 
+                logger.debug("Loading document %s" % '_'.join([document.collection_acronym, document.publisher_id]))
                 try:
                     xml = self.pipeline_to_xml(document)
                     self.solr.update(self.pipeline_to_xml(document), commit=True)
