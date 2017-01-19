@@ -15,14 +15,16 @@ import itertools
 from datetime import datetime, timedelta
 
 from lxml import etree as ET
-
+from SolrAPI import Solr
 import plumber
 import pipeline_xml
 from articlemeta.client import ThriftClient
 
-from SolrAPI import Solr
 
 logger = logging.getLogger('updatesearch')
+
+LOGGING_LEVEL = os.environ.get('LOGGING_LEVEL', None)
+SOLR_URL = os.environ.get('SOLR_URL', 'http://127.0.0.1/solr')
 
 ALLOWED_COLLECTION = [
     'scl',
@@ -51,80 +53,16 @@ class UpdateSearch(object):
     Process to get article in article meta and index in Solr.
     """
 
-    usage = """\
-    Process to index article to SciELO Solr.
-
-    This process collects articles in the Article meta using thrift and index
-    in SciELO Solr.
-
-    With this process it is possible to process all the article or some specific
-    by collection, issn from date to until another date and a period like 7 days.
-    """
-
-    parser = argparse.ArgumentParser(textwrap.dedent(usage))
-
-    parser.add_argument('-p', '--period',
-                        type=int,
-                        help='index articles from specific period, use number of days.')
-
-    parser.add_argument('-f', '--from',
-                        dest='from_date',
-                        type=lambda x: datetime.strptime(x, '%Y-%m-%d'),
-                        nargs='?',
-                        help='index articles from specific date. YYYY-MM-DD.')
-
-    parser.add_argument('-u', '--until',
-                        dest='until_date',
-                        type=lambda x: datetime.strptime(x, '%Y-%m-%d'),
-                        nargs='?',
-                        help='index articles until this specific date. YYYY-MM-DD (default today).',
-                        default=datetime.now())
-
-    parser.add_argument('-c', '--collection',
-                        dest='collection',
-                        default=None,
-                        help='use the acronym of the collection eg.: spa, scl, col.')
-
-    parser.add_argument('-i', '--issn',
-                        dest='issn',
-                        default=None,
-                        help='journal issn.')
-
-    parser.add_argument('-d', '--delete',
-                        dest='delete',
-                        default=None,
-                        help='delete query ex.: q=*:* (Lucene Syntax).')
-
-    parser.add_argument('-s', '--sanitization',
-                        dest='sanitization',
-                        default=False,
-                        action='store_true',
-                        help='Remove objects from the index that are no longer present in the database.')
-
-    parser.add_argument('-url', '--url',
-                        dest='solr_url',
-                        help='Solr RESTFul URL, processing try to get the variable from environment ``SOLR_URL`` otherwise use --url to set the url(preferable).')
-
-    parser.add_argument('-v', '--version',
-                        action='version',
-                        version='version: 0.2')
-
-    def __init__(self):
-
-        self.args = self.parser.parse_args()
-
-        solr_url = os.environ.get('SOLR_URL')
-
-        if not solr_url and not self.args.solr_url:
-            raise argparse.ArgumentTypeError('--url or ``SOLR_URL`` enviroment variable must be the set, use --help.')
-
-        if not solr_url:
-            self.solr = Solr(self.args.solr_url, timeout=10)
-        else:
-            self.solr = Solr(solr_url, timeout=10)
-
-        if self.args.period:
-            self.args.from_date = datetime.now() - timedelta(days=self.args.period)
+    def __init__(self, period=None, from_date=None, until_date=None, collection=None, issn=None, delete=False, sanitization=False):
+        self.delete = delete
+        self.sanitization = sanitization
+        self.collection = collection
+        self.from_date = from_date
+        self.until_date = until_date
+        self.issn = issn
+        self.solr = Solr(SOLR_URL, timeout=10)
+        if period:
+            from_date = datetime.now() - timedelta(days=period)
 
     def format_date(self, date):
         """
@@ -204,11 +142,11 @@ class UpdateSearch(object):
 
         art_meta = ThriftClient()
 
-        if self.args.delete:
+        if self.delete:
 
-            self.solr.delete(self.args.delete, commit=True)
+            self.solr.delete(self.delete, commit=True)
 
-        elif self.args.sanitization:
+        elif self.sanitization:
 
             # set of index ids
             ind_ids = set()
@@ -217,8 +155,9 @@ class UpdateSearch(object):
             art_ids = set()
 
             # all ids in index
-            list_ids = json.loads(self.solr.select(
-                                    {'q': '*:*', 'fl': 'id', 'rows': 1000000}))['response']['docs']
+            list_ids = json.loads(
+                self.solr.select(
+                    {'q': '*:*', 'fl': 'id', 'rows': 1000000}))['response']['docs']
 
             for id in list_ids:
                 ind_ids.add(id['id'])
@@ -244,12 +183,12 @@ class UpdateSearch(object):
             logger.info("Indexing in {0}".format(self.solr.url))
 
             for document in art_meta.documents(
-                collection=self.args.collection,
-                issn=self.args.issn,
-                from_date=self.format_date(self.args.from_date),
-                until_date=self.format_date(self.args.until_date)
+                collection=self.collection,
+                issn=self.issn,
+                from_date=self.format_date(self.from_date),
+                until_date=self.format_date(self.until_date)
             ):
-
+                logger.debug("Loading document %s" % '_'.join([document.collection_acronym, document.publisher_id]))
                 try:
                     xml = self.pipeline_to_xml(document)
                     self.solr.update(self.pipeline_to_xml(document), commit=True)
@@ -269,20 +208,94 @@ class UpdateSearch(object):
 
 def main():
 
+    usage = """\
+    Process to index article to SciELO Solr.
+
+    This process collects articles in the Article meta using thrift and index
+    in SciELO Solr.
+
+    With this process it is possible to process all the article or some specific
+    by collection, issn from date to until another date and a period like 7 days.
+    """
+
+    parser = argparse.ArgumentParser(textwrap.dedent(usage))
+
+    parser.add_argument(
+        '-p', '--period',
+        type=int,
+        help='index articles from specific period, use number of days.'
+    )
+
+    parser.add_argument(
+        '-f', '--from_date',
+        type=lambda x: datetime.strptime(x, '%Y-%m-%d'),
+        nargs='?',
+        help='index articles from specific date. YYYY-MM-DD.'
+    )
+
+    parser.add_argument(
+        '-u', '--until_date',
+        type=lambda x: datetime.strptime(x, '%Y-%m-%d'),
+        nargs='?',
+        help='index articles until this specific date. YYYY-MM-DD (default today).',
+        default=datetime.now()
+    )
+
+    parser.add_argument(
+        '-c', '--collection',
+        default=None,
+        help='use the acronym of the collection eg.: spa, scl, col.'
+    )
+
+    parser.add_argument(
+        '-i', '--issn',
+        default=None,
+        help='journal issn.'
+    )
+
+    parser.add_argument(
+        '-d', '--delete',
+        default=None,
+        help='delete query ex.: q=*:* (Lucene Syntax).'
+    )
+
+    parser.add_argument(
+        '-s', '--sanitization',
+        default=False,
+        action='store_true',
+        help='Remove objects from the index that are no longer present in the database.'
+    )
+
+    parser.add_argument(
+        '--logging_level',
+        '-l',
+        default=LOGGING_LEVEL,
+        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+        help='Logggin level'
+    )
+
+    args = parser.parse_args()
+    logger.setLevel(args.logging_level)
+    logging.basicConfig(
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+
+    start = time.time()
+
     try:
-        # set log
-        logging.config.fileConfig('logging.conf')
-
-        # Start time
-        start = time.time()
-
-        # run the process
-        UpdateSearch().run()
-
-        # End Time
-        end = time.time()
-
-        print("Duration {0} seconds.".format(end-start))
-
+        us = UpdateSearch(
+            period=args.period,
+            from_date=args.from_date,
+            until_date=args.until_date,
+            collection=args.collection,
+            issn=args.issn,
+            delete=args.delete,
+            sanitization=args.sanitization
+        )
+        us.run()
     except KeyboardInterrupt:
         logger.critical("Interrupt by user")
+    finally:
+        # End Time
+        end = time.time()
+        print("Duration {0} seconds.".format(end-start))

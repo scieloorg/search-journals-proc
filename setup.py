@@ -6,7 +6,7 @@ install_requires = [
     'articlemetaapi==1.6.15',
     'citedbyapi==1.3.10',
     'requests==2.11.1',
-    'lxml-=3.7.2',
+    'lxml==3.7.2',
     'picles.plumber==0.10',
     'solrapi'
 ]
@@ -38,6 +38,6 @@ setup(
     install_requires=install_requires,
     entry_points="""
     [console_scripts]
-    update_search=updatesearch.dumpdata:main
+    update_search=updatesearch.run:main
     """
 )
