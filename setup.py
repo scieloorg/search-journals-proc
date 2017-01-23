@@ -31,7 +31,7 @@ setup(
         "Operating System :: POSIX :: Linux",
     ],
     dependency_links=[
-        "git+https://github.com/picleslivre/solrapi#egg=solrapi"
+        "git+https://github.com/picleslivre/solrapi@1.0.0#egg=solrapi"
     ],
     test_suite='tests',
     tests_require=tests_require,
