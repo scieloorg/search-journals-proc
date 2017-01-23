@@ -3,9 +3,8 @@ version: '2'
 services:
 
   update-search:
-    image: scieloorg/update_search
+    image: scieloorg/update_search:release-1.2.3
     environment:
-      - SOLR_URL=127.0.0.1:8080
+      - SOLR_URL=http://127.0.0.1:8080/solr/index
       - LOGGING_LEVEL=DEBUG
-    command: update_search -c sss
-    restart: never
+    command: update_search -c sss -p 30
