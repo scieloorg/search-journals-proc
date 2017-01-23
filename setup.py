@@ -15,7 +15,7 @@ tests_require = []
 
 setup(
     name="UpdateSearch",
-    version='1.2.2',
+    version='1.2.3',
     description="Process article to Solr",
     author="SciELO",
     author_email="scielo-dev@googlegroups.com",
@@ -38,6 +38,6 @@ setup(
     install_requires=install_requires,
     entry_points="""
     [console_scripts]
-    update_search=updatesearch.run:main
+    update_search=updatesearch.metadata:main
     """
 )
