@@ -23,7 +23,7 @@ from articlemeta.client import ThriftClient
 
 logger = logging.getLogger('updatesearch')
 
-LOGGING_LEVEL = os.environ.get('LOGGING_LEVEL', None)
+LOGGING_LEVEL = os.environ.get('LOGGING_LEVEL', 'DEBUG')
 SOLR_URL = os.environ.get('SOLR_URL', 'http://127.0.0.1/solr')
 
 
@@ -126,10 +126,7 @@ class UpdateSearch(object):
             self.solr.delete(self.delete, commit=True)
         else:
 
-            # Get article identifiers
-
             logger.info("Indexing in {0}".format(self.solr.url))
-
             for document in art_meta.documents(
                 collection=self.collection,
                 issn=self.issn,
@@ -138,6 +135,7 @@ class UpdateSearch(object):
             ):
 
                 logger.debug("Loading document %s" % '_'.join([document.collection_acronym, document.publisher_id]))
+
                 try:
                     xml = self.pipeline_to_xml(document)
                     self.solr.update(self.pipeline_to_xml(document), commit=True)
@@ -150,21 +148,31 @@ class UpdateSearch(object):
                     logger.exception(e)
                     continue
 
-
-        if self.sanitization:
+        if self.sanitization is True:
             logger.info("Running sanitization process")
-            # set of index ids
             ind_ids = set()
-            # set of articlemeta ids
             art_ids = set()
-            # all ids in index
-            list_ids = json.loads(
-                self.solr.select(
-                    {'q': '*:*', 'fl': 'id', 'rows': 1000000}))['response']['docs']
+
+            itens_query = []
+            if self.collection:
+                itens_query.append('in:%s' % self.collection)
+
+            if self.issn:
+                itens_query.append('issn:%s' % self.issn)
+
+            query = '*:*' if len(itens_query) == 0 else ' AND '.join(itens_query)
+
+            list_ids = json.loads(self.solr.select(
+                {'q': query, 'fl': 'id', 'rows': 1000000}))['response']['docs']
+
             for id in list_ids:
                 ind_ids.add(id['id'])
             # all ids in articlemeta
-            for item in art_meta.documents(only_identifiers=True):
+            for item in art_meta.documents(
+                collection=self.collection,
+                issn=self.issn,
+                only_identifiers=True
+            ):
                 art_ids.add('%s-%s' % (item.code, item.collection))
             # Ids to remove
             remove_ids = ind_ids - art_ids
