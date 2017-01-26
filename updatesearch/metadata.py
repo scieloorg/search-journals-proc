@@ -124,35 +124,6 @@ class UpdateSearch(object):
         if self.delete:
 
             self.solr.delete(self.delete, commit=True)
-
-        elif self.sanitization:
-
-            # set of index ids
-            ind_ids = set()
-
-            # set of articlemeta ids
-            art_ids = set()
-
-            # all ids in index
-            list_ids = json.loads(
-                self.solr.select(
-                    {'q': '*:*', 'fl': 'id', 'rows': 1000000}))['response']['docs']
-
-            for id in list_ids:
-                ind_ids.add(id['id'])
-
-            # all ids in articlemeta
-            for item in art_meta.documents(only_identifiers=True):
-                art_ids.add('%s-%s' % (item.code, item.collection))
-
-            # Ids to remove
-            remove_ids = ind_ids - art_ids
-
-            for id in remove_ids:
-                self.solr.delete('id:%s' % id, commit=True)
-
-            logger.info("List of removed ids: %s" % remove_ids)
-
         else:
 
             # Get article identifiers
@@ -178,6 +149,28 @@ class UpdateSearch(object):
                     logger.error("Error: {0}".format(e))
                     logger.exception(e)
                     continue
+
+
+        if self.sanitization:
+            logger.info("Running sanitization process")
+            # set of index ids
+            ind_ids = set()
+            # set of articlemeta ids
+            art_ids = set()
+            # all ids in index
+            list_ids = json.loads(
+                self.solr.select(
+                    {'q': '*:*', 'fl': 'id', 'rows': 1000000}))['response']['docs']
+            for id in list_ids:
+                ind_ids.add(id['id'])
+            # all ids in articlemeta
+            for item in art_meta.documents(only_identifiers=True):
+                art_ids.add('%s-%s' % (item.code, item.collection))
+            # Ids to remove
+            remove_ids = ind_ids - art_ids
+            for id in remove_ids:
+                logger.debug("Removing id: %s" % id)
+                self.solr.delete('id:%s' % id, commit=True)
 
         # optimize the index
         self.solr.commit()
