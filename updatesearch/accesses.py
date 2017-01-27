@@ -105,7 +105,7 @@ class UpdateSearch(object):
             )
 
             try:
-                result = self.solr.update(xml, commit=True)
+                result = self.solr.update(xml, commit=False)
             except ValueError as e:
                 logger.error("ValueError: {0}".format(e))
                 logger.exception(e)
