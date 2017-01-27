@@ -4,6 +4,7 @@ from setuptools import setup, find_packages
 
 install_requires = [
     'articlemetaapi==1.6.15',
+    'accessstatsapi==1.0.1',
     'citedbyapi==1.3.10',
     'requests==2.11.1',
     'lxml==3.7.2',
@@ -15,7 +16,7 @@ tests_require = []
 
 setup(
     name="UpdateSearch",
-    version='1.3.5',
+    version='1.4.5',
     description="Process article to Solr",
     author="SciELO",
     author_email="scielo-dev@googlegroups.com",
@@ -39,5 +40,6 @@ setup(
     entry_points="""
     [console_scripts]
     update_search=updatesearch.metadata:main
+    update_search_accesses=updatesearch.accesses:main
     """
 )

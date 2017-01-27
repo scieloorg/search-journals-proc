@@ -123,7 +123,7 @@ class UpdateSearch(object):
 
         if self.delete:
 
-            self.solr.delete(self.delete, commit=True)
+            self.solr.delete(self.delete, commit=False)
         else:
 
             logger.info("Indexing in {0}".format(self.solr.url))
@@ -138,7 +138,7 @@ class UpdateSearch(object):
 
                 try:
                     xml = self.pipeline_to_xml(document)
-                    self.solr.update(self.pipeline_to_xml(document), commit=True)
+                    self.solr.update(self.pipeline_to_xml(document), commit=False)
                 except ValueError as e:
                     logger.error("ValueError: {0}".format(e))
                     logger.exception(e)
@@ -178,7 +178,7 @@ class UpdateSearch(object):
             remove_ids = ind_ids - art_ids
             for id in remove_ids:
                 logger.debug("Removing id: %s" % id)
-                self.solr.delete('id:%s' % id, commit=True)
+                self.solr.delete('id:%s' % id, commit=False)
 
         # optimize the index
         self.solr.commit()
