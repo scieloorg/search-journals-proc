@@ -9,14 +9,15 @@ install_requires = [
     'requests==2.11.1',
     'lxml==3.7.2',
     'picles.plumber==0.10',
-    'solrapi'
+    'solrapi',
+    'raven==5.32.0'
 ]
 
 tests_require = []
 
 setup(
     name="UpdateSearch",
-    version='1.4.5',
+    version='1.5.5',
     description="Process article to Solr",
     author="SciELO",
     author_email="scielo-dev@googlegroups.com",
@@ -32,7 +33,7 @@ setup(
         "Operating System :: POSIX :: Linux",
     ],
     dependency_links=[
-        "git+https://github.com/picleslivre/solrapi@1.0.0#egg=solrapi"
+        "git+https://github.com/picleslivre/solrapi@1.0.0#egg=solrapi-1.0.0"
     ],
     test_suite='tests',
     tests_require=tests_require,
