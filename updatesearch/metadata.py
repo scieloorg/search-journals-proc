@@ -21,10 +21,48 @@ import pipeline_xml
 from articlemeta.client import ThriftClient
 
 
-logger = logging.getLogger('updatesearch')
+logger = logging.getLogger(__name__)
 
-LOGGING_LEVEL = os.environ.get('LOGGING_LEVEL', 'DEBUG')
 SOLR_URL = os.environ.get('SOLR_URL', 'http://127.0.0.1/solr')
+SENTRY_HANDLER = os.environ.get('SENTRY_HANDLER', None)
+LOGGING_LEVEL = os.environ.get('LOGGING_LEVEL', 'DEBUG')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+
+    'formatters': {
+        'console': {
+            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            'datefmt': '%H:%M:%S',
+            },
+        },
+    'handlers': {
+        'console': {
+            'level': LOGGING_LEVEL,
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+            }
+        },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': LOGGING_LEVEL,
+            'propagate': False,
+            },
+        'updatesearch.metadata': {
+            'level': LOGGING_LEVEL,
+            'propagate': True,
+        },
+    }
+}
+
+if SENTRY_HANDLER:
+    LOGGING['handlers']['sentry'] = {
+        'level': 'ERROR',
+        'class': 'raven.handlers.logging.SentryHandler',
+        'dsn': SENTRY_HANDLER,
+    }
+    LOGGING['loggers']['']['handlers'].append('sentry')
 
 
 class UpdateSearch(object):
@@ -254,10 +292,11 @@ def main():
     )
 
     args = parser.parse_args()
-    logger.setLevel(args.logging_level)
-    logging.basicConfig(
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
+    LOGGING['handlers']['console']['level'] = args.logging_level
+    for lg, content in LOGGING['loggers'].items():
+        content['level'] = args.logging_level
+
+    logging.config.dictConfig(LOGGING)
 
     start = time.time()
 
@@ -277,4 +316,4 @@ def main():
     finally:
         # End Time
         end = time.time()
-        print("Duration {0} seconds.".format(end-start))
+        logger.info("Duration {0} seconds.".format(end-start))
