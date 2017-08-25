@@ -17,7 +17,7 @@ tests_require = []
 
 setup(
     name="UpdateSearch",
-    version='1.9.0',
+    version='1.10.0',
     description="Process article to Solr",
     author="SciELO",
     author_email="scielo-dev@googlegroups.com",
@@ -42,5 +42,6 @@ setup(
     [console_scripts]
     update_search=updatesearch.metadata:main
     update_search_accesses=updatesearch.accesses:main
+    update_search_citations=updatesearch.citations:main
     """
 )

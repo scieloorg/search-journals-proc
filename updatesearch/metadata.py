@@ -71,12 +71,14 @@ class UpdateSearch(object):
     """
 
     def __init__(self, period=None, from_date=None, until_date=None,
-                 collection=None, issn=None, delete=False, differential=False):
+                 collection=None, issn=None, delete=False, differential=False,
+                 load_indicators=False):
         self.delete = delete
         self.collection = collection
         self.from_date = from_date
         self.until_date = until_date
         self.differential = differential
+        self.load_indicators = load_indicators
         self.issn = issn
         self.solr = Solr(SOLR_URL, timeout=10)
         if period:
@@ -102,7 +104,7 @@ class UpdateSearch(object):
         :param list_dict: List of dictionary content key tronsform in a XML.
         """
 
-        ppl = plumber.Pipeline(
+        pipeline_itens = [
             pipeline_xml.SetupDocument(),
             pipeline_xml.DocumentID(),
             pipeline_xml.DOI(),
@@ -139,10 +141,15 @@ class UpdateSearch(object):
             pipeline_xml.Permission(),
             pipeline_xml.Keywords(),
             pipeline_xml.JournalISSNs(),
-            pipeline_xml.SubjectAreas(),
-            pipeline_xml.ReceivedCitations(),
-            pipeline_xml.TearDown()
-        )
+            pipeline_xml.SubjectAreas()
+        ]
+
+        if self.load_indicators is True:
+            pipeline_itens(pipeline_xml.ReceivedCitations())
+
+        pipeline_itens.append(pipeline_xml.TearDown())
+
+        ppl = plumber.Pipeline(*pipeline_itens)
 
         xmls = ppl.run([article])
 
@@ -333,6 +340,13 @@ def main():
     )
 
     parser.add_argument(
+        '-n', '--load_indicators',
+        default=False,
+        action='store_true',
+        help='Load articles received citations and downloads while including or updating documents. It makes the processing extremelly slow.'
+    )
+
+    parser.add_argument(
         '-u', '--until_date',
         type=lambda x: datetime.strptime(x, '%Y-%m-%d'),
         nargs='?',
@@ -384,7 +398,8 @@ def main():
             collection=args.collection,
             issn=args.issn,
             delete=args.delete,
-            differential=args.differential
+            differential=args.differential,
+            load_indicators=args.load_indicators
         )
         us.run()
     except KeyboardInterrupt:
