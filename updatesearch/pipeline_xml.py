@@ -18,6 +18,8 @@ Full example output of this pipeline:
         <field name="type">editorial</field>
         <field name="ur">art-S1980-993X2015000200234</field>
         <field name="authors">Marcelo dos Santos, Targa</field>
+        <field name="orcidid">orcidid</field>
+        <field name="lattesid">lattesid</field>
         <field name="ti_*">Benefits and legacy of the water crisis in Brazil</field>
         <field name="pg">234-239</field>
         <field name="doi">10.1590/S0102-67202014000200011</field>
@@ -78,7 +80,6 @@ class SubjectAreas(plumber.Pipe):
             xml.find('.').append(field)
 
             return data
-
 
         for subject_area in raw.journal.subject_areas:
             field = ET.Element('field')
@@ -293,6 +294,28 @@ class Authors(plumber.Pipe):
             field.text = ', '.join(name)
 
             field.set('name', 'au')
+            xml.find('.').append(field)
+
+        return data
+
+
+class Orcid(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.authors:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        for orcid in [i['orcid'] for i in raw.authors if i.get('orcid', None)]:
+            field = ET.Element('field')
+            field.text = orcid
+            field.set('name', 'orcid')
             xml.find('.').append(field)
 
         return data

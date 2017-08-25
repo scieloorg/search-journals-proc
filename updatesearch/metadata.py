@@ -70,12 +70,13 @@ class UpdateSearch(object):
     Process to get article in article meta and index in Solr.
     """
 
-    def __init__(self, period=None, from_date=None, until_date=None, collection=None, issn=None, delete=False, sanitization=False):
+    def __init__(self, period=None, from_date=None, until_date=None,
+                 collection=None, issn=None, delete=False, differential=False):
         self.delete = delete
-        self.sanitization = sanitization
         self.collection = collection
         self.from_date = from_date
         self.until_date = until_date
+        self.differential = differential
         self.issn = issn
         self.solr = Solr(SOLR_URL, timeout=10)
         if period:
@@ -109,6 +110,7 @@ class UpdateSearch(object):
             pipeline_xml.DocumentType(),
             pipeline_xml.URL(),
             pipeline_xml.Authors(),
+            pipeline_xml.Orcid(),
             pipeline_xml.Titles(),
             pipeline_xml.OriginalTitle(),
             pipeline_xml.Pages(),
@@ -152,31 +154,66 @@ class UpdateSearch(object):
 
         return ET.tostring(add, encoding="utf-8", method="xml")
 
-    def run(self):
-        """
-        Run the process for update article in Solr.
-        """
-
+    def differential_mode(self):
         art_meta = ThriftClient()
 
-        if self.delete:
+        logger.info("Running with differential mode")
+        ind_ids = set()
+        art_ids = set()
 
-            self.solr.delete(self.delete, commit=False)
-        else:
+        itens_query = []
+        if self.collection:
+            itens_query.append('in:%s' % self.collection)
 
-            logger.info("Indexing in {0}".format(self.solr.url))
-            for document in art_meta.documents(
-                collection=self.collection,
-                issn=self.issn,
-                from_date=self.format_date(self.from_date),
-                until_date=self.format_date(self.until_date)
-            ):
+        if self.issn:
+            itens_query.append('issn:%s' % self.issn)
 
-                logger.debug("Loading document %s" % '_'.join([document.collection_acronym, document.publisher_id]))
+        query = '*:*' if len(itens_query) == 0 else ' AND '.join(itens_query)
 
+        list_ids = json.loads(self.solr.select(
+            {'q': query, 'fl': 'id,scielo_processing_date', 'rows': 1000000}))['response']['docs']
+
+        # all ids in search index
+        logger.info("Loading Search Index ids.")
+        for id in list_ids:
+            ind_ids.add('%s-%s' % (id['id'], id.get('scielo_processing_date', '1900-01-01')))
+
+        # all ids in articlemeta
+        logger.info("Loading ArticleMeta ids.")
+        for item in art_meta.documents(
+            collection=self.collection,
+            issn=self.issn,
+            only_identifiers=True
+        ):
+            art_ids.add('%s-%s-%s' % (item.code, item.collection, item.processing_date))
+
+        # Ids to remove
+        if self.delete is True:
+            logger.info("Running remove records process.")
+            remove_ids = ind_ids - art_ids
+            logger.info("Removing (%d) documents from search index." % len(remove_ids))
+            total_to_remove = len(remove_ids)
+            if total_to_remove > 0:
+                for ndx, to_remove_id in enumerate(remove_ids, 1):
+                    logger.debug("Removing (%d/%d): %s" % (ndx, total_to_remove, to_remove_id))
+                    to_remove_id = to_remove_id[:-11]
+                    self.solr.delete('id:%s' % to_remove_id, commit=False)
+
+        # Ids to include
+        logger.info("Running include records process.")
+        include_ids = art_ids - ind_ids
+        logger.info("Including (%d) documents to search index." % len(include_ids))
+        total_to_include = len(include_ids)
+        if total_to_include > 0:
+            for ndx, to_include_id in enumerate(include_ids, 1):
+                logger.debug("Including (%d/%d): %s" % (ndx, total_to_include, to_include_id))
+                code = to_include_id[:23]
+                collection = to_include_id[24: 27]
+                processing_date = to_include_id[:-11]
+                document = art_meta.document(code=code, collection=collection)
                 try:
                     xml = self.pipeline_to_xml(document)
-                    self.solr.update(self.pipeline_to_xml(document), commit=False)
+                    self.solr.update(xml, commit=False)
                 except ValueError as e:
                     logger.error("ValueError: {0}".format(e))
                     logger.exception(e)
@@ -186,8 +223,34 @@ class UpdateSearch(object):
                     logger.exception(e)
                     continue
 
-        if self.sanitization is True:
-            logger.info("Running sanitization process")
+    def common_mode(self):
+        art_meta = ThriftClient()
+
+        logger.info("Running without differential mode")
+        logger.info("Indexing in {0}".format(self.solr.url))
+        for document in art_meta.documents(
+            collection=self.collection,
+            issn=self.issn,
+            from_date=self.format_date(self.from_date),
+            until_date=self.format_date(self.until_date)
+        ):
+
+            logger.debug("Loading document %s" % '_'.join([document.collection_acronym, document.publisher_id]))
+
+            try:
+                xml = self.pipeline_to_xml(document)
+                self.solr.update(xml, commit=False)
+            except ValueError as e:
+                logger.error("ValueError: {0}".format(e))
+                logger.exception(e)
+                continue
+            except Exception as e:
+                logger.error("Error: {0}".format(e))
+                logger.exception(e)
+                continue
+
+        if self.delete is True:
+            logger.info("Running remove records process.")
             ind_ids = set()
             art_ids = set()
 
@@ -205,6 +268,7 @@ class UpdateSearch(object):
 
             for id in list_ids:
                 ind_ids.add(id['id'])
+
             # all ids in articlemeta
             for item in art_meta.documents(
                 collection=self.collection,
@@ -213,10 +277,21 @@ class UpdateSearch(object):
             ):
                 art_ids.add('%s-%s' % (item.code, item.collection))
             # Ids to remove
+            total_to_remove = len(remove_ids)
+            logger.info("Removing (%d) documents from search index." % len(remove_ids))
             remove_ids = ind_ids - art_ids
-            for id in remove_ids:
-                logger.debug("Removing id: %s" % id)
-                self.solr.delete('id:%s' % id, commit=False)
+            for ndx, to_remove_id in enumerate(remove_ids, 1):
+                logger.debug("Removing (%d/%d): %s" % (ndx, total_to_remove, to_remove_id))
+                self.solr.delete('id:%s' % to_remove_id, commit=False)
+
+    def run(self):
+        """
+        Run the process for update article in Solr.
+        """
+        if self.differential is True:
+            self.differential_mode()
+        else:
+            self.common_mode()
 
         # optimize the index
         self.solr.commit()
@@ -236,6 +311,13 @@ def main():
     """
 
     parser = argparse.ArgumentParser(textwrap.dedent(usage))
+
+    parser.add_argument(
+        '-x', '--differential',
+        default=False,
+        action='store_true',
+        help='Update and Remove records according to a comparison between ArticleMeta ID\'s and the ID\' available in the search engine. It will consider the processing date as a compounded matching key collection+pid+processing_date. This option will run over the entire index, the parameters -p -f -u will not take effect when this option is selected.'
+    )
 
     parser.add_argument(
         '-p', '--period',
@@ -272,15 +354,9 @@ def main():
 
     parser.add_argument(
         '-d', '--delete',
-        default=None,
-        help='delete query ex.: q=*:* (Lucene Syntax).'
-    )
-
-    parser.add_argument(
-        '-s', '--sanitization',
         default=False,
         action='store_true',
-        help='Remove objects from the index that are no longer present in the database.'
+        help='delete query ex.: q=*:* (Lucene Syntax).'
     )
 
     parser.add_argument(
@@ -308,7 +384,7 @@ def main():
             collection=args.collection,
             issn=args.issn,
             delete=args.delete,
-            sanitization=args.sanitization
+            differential=args.differential
         )
         us.run()
     except KeyboardInterrupt:

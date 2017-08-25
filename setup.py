@@ -3,10 +3,10 @@ import os
 from setuptools import setup, find_packages
 
 install_requires = [
-    'articlemetaapi==1.11.16',
-    'accessstatsapi==1.0.1',
-    'citedbyapi==1.3.10',
-    'requests==2.11.1',
+    'articlemetaapi==1.16.0',
+    'accessstatsapi==1.2.0',
+    'citedbyapi==1.5.1',
+    'requests>=2.11.1',
     'lxml==3.7.2',
     'picles.plumber==0.10',
     'solrapi',
@@ -17,7 +17,7 @@ tests_require = []
 
 setup(
     name="UpdateSearch",
-    version='1.8.5',
+    version='1.9.0',
     description="Process article to Solr",
     author="SciELO",
     author_email="scielo-dev@googlegroups.com",

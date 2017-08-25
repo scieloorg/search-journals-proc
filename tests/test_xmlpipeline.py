@@ -234,6 +234,21 @@ class ExportTests(unittest.TestCase):
 
         self.assertEqual(u'S0034-89102010000400007', result)
 
+    def test_xml_orcid_pipe(self):
+
+        pxml = ET.Element('doc')
+
+        self._article_meta.data['article']['v10'][0]['k'] = u"0000-0003-3696-252X"
+
+        data = [self._article_meta, pxml]
+
+        xmlarticle = pipeline_xml.Orcid()
+        raw, xml = xmlarticle.transform(data)
+
+        result = ', '.join([i.text for i in xml.findall('./field[@name="orcid"]')])
+
+        self.assertEqual(u'0000-0003-3696-252X', result)
+
     def test_xml_document_authors_pipe(self):
 
         pxml = ET.Element('doc')
