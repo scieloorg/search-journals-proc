@@ -145,7 +145,7 @@ class UpdateSearch(object):
         ]
 
         if self.load_indicators is True:
-            pipeline_itens(pipeline_xml.ReceivedCitations())
+            pipeline_itens.append(pipeline_xml.ReceivedCitations())
 
         pipeline_itens.append(pipeline_xml.TearDown())
 
