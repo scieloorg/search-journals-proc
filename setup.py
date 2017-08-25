@@ -3,14 +3,14 @@ import os
 from setuptools import setup, find_packages
 
 install_requires = [
+    'requests>=2.18.1',
+    'lxml==3.7.2',
+    'raven==6.1.0',
     'articlemetaapi==1.16.0',
     'accessstatsapi==1.2.0',
     'citedbyapi==1.5.1',
-    'requests>=2.11.1',
-    'lxml==3.7.2',
     'picles.plumber==0.10',
-    'solrapi',
-    'raven==5.32.0'
+    'solrapi>=1.2.0'
 ]
 
 tests_require = []
