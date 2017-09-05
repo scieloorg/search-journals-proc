@@ -168,6 +168,8 @@ class UpdateSearch(object):
         ind_ids = set()
         art_ids = set()
 
+        # all ids in search index
+        logger.info("Loading Search Index ids.")
         itens_query = []
         if self.collection:
             itens_query.append('in:%s' % self.collection)
@@ -176,12 +178,9 @@ class UpdateSearch(object):
             itens_query.append('issn:%s' % self.issn)
 
         query = '*:*' if len(itens_query) == 0 else ' AND '.join(itens_query)
-
         list_ids = json.loads(self.solr.select(
             {'q': query, 'fl': 'id,scielo_processing_date', 'rows': 1000000}))['response']['docs']
 
-        # all ids in search index
-        logger.info("Loading Search Index ids.")
         for id in list_ids:
             ind_ids.add('%s-%s' % (id['id'], id.get('scielo_processing_date', '1900-01-01')))
 

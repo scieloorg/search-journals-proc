@@ -17,7 +17,7 @@ tests_require = []
 
 setup(
     name="UpdateSearch",
-    version='1.12.0',
+    version='1.13.0',
     description="Process article to Solr",
     author="SciELO",
     author_email="scielo-dev@googlegroups.com",
