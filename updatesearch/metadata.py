@@ -1,8 +1,5 @@
 #!/usr/bin/python
 # coding: utf-8
-
-from __future__ import print_function
-
 import os
 import sys
 import time
@@ -17,8 +14,9 @@ from datetime import datetime, timedelta
 from lxml import etree as ET
 from SolrAPI import Solr
 import plumber
-import pipeline_xml
 from articlemeta.client import ThriftClient
+
+from updatesearch import pipeline_xml
 
 
 logger = logging.getLogger(__name__)
