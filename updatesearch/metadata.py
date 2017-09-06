@@ -194,7 +194,7 @@ class UpdateSearch(object):
         # Ids to remove
         if self.delete is True:
             logger.info("Running remove records process.")
-            remove_ids = ind_ids - art_ids
+            remove_ids = set([i[:23] for i in ind_ids]) - set([i[:23] for i in art_ids])
             logger.info("Removing (%d) documents from search index." % len(remove_ids))
             total_to_remove = len(remove_ids)
             if total_to_remove > 0:
