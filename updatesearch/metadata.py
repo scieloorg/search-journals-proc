@@ -194,13 +194,12 @@ class UpdateSearch(object):
         # Ids to remove
         if self.delete is True:
             logger.info("Running remove records process.")
-            remove_ids = set([i[:23] for i in ind_ids]) - set([i[:23] for i in art_ids])
+            remove_ids = set([i[:27] for i in ind_ids]) - set([i[:27] for i in art_ids])
             logger.info("Removing (%d) documents from search index." % len(remove_ids))
             total_to_remove = len(remove_ids)
             if total_to_remove > 0:
                 for ndx, to_remove_id in enumerate(remove_ids, 1):
                     logger.debug("Removing (%d/%d): %s" % (ndx, total_to_remove, to_remove_id))
-                    to_remove_id = to_remove_id[:-11]
                     self.solr.delete('id:%s' % to_remove_id, commit=False)
 
         # Ids to include
