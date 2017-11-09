@@ -8,7 +8,7 @@ install_requires = [
     'raven==6.1.0',
     'articlemetaapi==1.23.0',
     'accessstatsapi==1.2.0',
-    'citedbyapi==1.8.0'
+    'citedbyapi==1.8.0',
     'picles.plumber==0.10',
     'solrapi>=1.2.0'
 ]
