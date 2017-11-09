@@ -6,9 +6,9 @@ install_requires = [
     'requests>=2.18.1',
     'lxml==3.7.2',
     'raven==6.1.0',
-    'articlemetaapi==1.18.0',
+    'articlemetaapi==1.23.0',
     'accessstatsapi==1.2.0',
-    'citedbyapi==1.5.1',
+    'citedbyapi==1.8.0'
     'picles.plumber==0.10',
     'solrapi>=1.2.0'
 ]
@@ -17,7 +17,7 @@ tests_require = []
 
 setup(
     name="UpdateSearch",
-    version='1.15.2',
+    version='1.16.0',
     description="Process article to Solr",
     author="SciELO",
     author_email="scielo-dev@googlegroups.com",
