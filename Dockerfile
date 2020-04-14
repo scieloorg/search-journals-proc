@@ -1,8 +1,10 @@
-FROM python:3.5.2
+FROM python:3.6-alpine
+ENV PYTHONUNBUFFERED 1
 
 MAINTAINER tecnologia@scielo.org
 
-RUN apt-get update && apt-get install -y libxml2
+RUN apk --update add --no-cache \
+    git gcc build-base zlib-dev jpeg-dev curl libxml2-dev libxslt-dev py3-lxml libressl libressl-dev ca-certificates
 
 COPY . /app
 
@@ -13,4 +15,8 @@ WORKDIR /app
 
 RUN python setup.py install
 
+RUN chown -R nobody:nogroup /app
+USER nobody
+
 CMD ["update_search", "--help"]
+

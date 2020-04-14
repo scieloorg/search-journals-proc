@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 from setuptools import setup, find_packages
 
 install_requires = [
@@ -10,7 +9,10 @@ install_requires = [
     'accessstatsapi==1.2.0',
     'citedbyapi==1.8.0',
     'picles.plumber==0.10',
-    'solrapi>=1.2.0'
+    'Sickle==0.6.5',
+    'langcodes==1.4.1',
+    'solrapi>=1.2.0',
+    'certifi'
 ]
 
 tests_require = []
@@ -41,6 +43,7 @@ setup(
     entry_points="""
     [console_scripts]
     update_search=updatesearch.metadata:main
+    update_search_preprint=updatepreprint.updatepreprint:main
     update_search_accesses=updatesearch.accesses:main
     update_search_citations=updatesearch.citations:main
     """

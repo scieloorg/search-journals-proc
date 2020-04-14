@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+
+  update-search:
+    build:
+        context: .
+        dockerfile: ./Dockerfile-dev
+    environment:
+      - SOLR_URL=http://localhost:8983/solr/article
+      - LOGGING_LEVEL=DEBUG
+    command: update_search -c sss -p 30
+
+  update-search-preprint:
+    build:
+        context: .
+        dockerfile: ./Dockerfile-dev
+    environment:
+      - SOLR_URL=http://localhost:8983/solr/article
+      - OAI_URL=https://preprints.scielo.org/index.php/scielo/oai
+      - LOGGING_LEVEL=DEBUG
+    command: update_search_preprint -p 1
