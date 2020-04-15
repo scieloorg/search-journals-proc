@@ -168,7 +168,7 @@ class UpdatePreprint(object):
 
             logger.info("Indexing in {0}".format(self.solr.url))
 
-            sickle = Sickle(self.args.oai_url)
+            sickle = Sickle(self.args.oai_url, verify=False)
 
             records = sickle.ListRecords(**{
                                         'metadataPrefix': 'oai_dc',
