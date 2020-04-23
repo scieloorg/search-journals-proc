@@ -136,9 +136,10 @@ class UpdatePreprint(object):
                 sys.exit(0)
             else:
 
-                for record in records:
+                for i, record in enumerate(records):
                     try:
                         xml = self.pipeline_to_xml(record.xml)
+                        print("Indexing record %s with oai id: %s" % (i, record.header.identifier))
                         self.solr.update(xml, commit=True)
                     except ValueError as e:
                         print("ValueError: {0}".format(e))
