@@ -220,8 +220,31 @@ class Abstract(plumber.Pipe):
                 lang = lang.split("-")[0]
             field = ET.Element('field')
             field.text = item.text
-            field.set('name', 'ab_{}'.format(lang))
+            field.set('name', 'ab_{}'.format(standardize_tag(lang)))
             xml.find('.').append(field)
+        return data
+
+
+# <field name="available_languages"  type="string" indexed="true" stored="true"  multiValued="true"/>
+class AvailableLanguages(plumber.Pipe):
+
+    def transform(self, data):
+        raw, xml = data
+        xpath = ".//dc:description"
+
+        langs = set()
+        for item in raw.findall(xpath, namespaces=ns):
+            lang = item.get('{http://www.w3.org/XML/1998/namespace}lang')
+            if "-" in lang:
+                lang = lang.split("-")[0]
+            langs.add(standardize_tag(lang))
+
+        for language in langs:
+            field = ET.Element('field')
+            field.text = language
+            field.set('name', 'available_languages')
+            xml.find('.').append(field)
+
         return data
 
 

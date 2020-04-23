@@ -272,6 +272,7 @@ class TestFulltexts(unittest.TestCase):
                     http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
                     <dc:identifier>https://preprints.scielo.org/index.php/scielo/preprint/view/7</dc:identifier>
                     <dc:identifier>10.1590/scielopreprints.7</dc:identifier>
+                    <dc:language>eng</dc:language>
                 </oai_dc:dc>
             </metadata>
         </record>
@@ -342,6 +343,38 @@ class TestAbstract(unittest.TestCase):
         self.assertIsNotNone(xml.find(".//field[@name='ab_es']"))
         self.assertIsNotNone(xml.find(".//field[@name='ab_pt']"))
         self.assertIsNotNone(xml.find(".//field[@name='ab_fr']"))
+
+
+# <field name="AvailableLanguages">en</field>
+# <field name="AvailableLanguages">pt</field>
+class TestAvailableLanguages(unittest.TestCase):
+
+    def test_transform(self):
+        text = """<root xmlns:dc="http://www.openarchives.org/OAI/2.0/provenance">
+        <record>
+            <metadata>
+                <oai_dc:dc
+                    xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+                    xmlns:dc="http://purl.org/dc/elements/1.1/"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/
+                    http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+                    <dc:description xml:lang="es-ES">COVID-19 in Brazil: advantages of a socialized unified health system and preparation to contain cases</dc:description>
+                    <dc:description xml:lang="pt-BR">COVID-19 in Brazil: advantages of a socialized unified health system and preparation to contain cases</dc:description>
+                    <dc:description xml:lang="fr-FR">COVID-19 in Brazil: advantages of a socialized unified health system and preparation to contain cases</dc:description>
+                </oai_dc:dc>
+            </metadata>
+        </record>
+        </root>
+        """
+        xml = ET.Element("doc")
+        raw = ET.fromstring(text)
+        data = raw, xml
+        raw, xml = pipeline_xml.AvailableLanguages().transform(data)
+
+        result = xml.findall('./field[@name="available_languages"]')
+
+        self.assertEqual(['es', 'fr', 'pt'], sorted([i.text for i in result]))
 
 
 # <field name="keyword_*"></field>

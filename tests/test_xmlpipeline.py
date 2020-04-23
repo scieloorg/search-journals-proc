@@ -99,7 +99,7 @@ class ExportTests(unittest.TestCase):
         xmlarticle = pipeline_xml.SetupDocument()
         raw, xml = xmlarticle.transform(data)
 
-        self.assertEqual('<doc />', ET.tostring(xml))
+        self.assertEqual(b'<doc/>', ET.tostring(xml))
 
     def test_is_citable_false(self):
 
@@ -702,7 +702,7 @@ class ExportTests(unittest.TestCase):
 
         result = [i.text for i in xml.findall('./field[@name="sponsor"]')]
 
-        self.assertEqual([u'Fundação de Amparo à Pesquisa do Estado de Minas Gerais', u'Ministério da Saúde', u'Conselho Nacional de Desenvolvimento Científico e Tecnológico'], result)
+        self.assertEqual(sorted([u'Fundação de Amparo à Pesquisa do Estado de Minas Gerais', u'Ministério da Saúde', u'Conselho Nacional de Desenvolvimento Científico e Tecnológico']), sorted(result))
 
     def test_xml_document_sponsor_without_data_pipe(self):
 

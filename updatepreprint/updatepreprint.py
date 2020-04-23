@@ -95,6 +95,7 @@ class UpdatePreprint(object):
             pipeline_xml.Titles(),
             pipeline_xml.Abstract(),
             pipeline_xml.Authors(),
+            pipeline_xml.AvailableLanguages(),
 
             pipeline_xml.TearDown()
         )
