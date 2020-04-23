@@ -2,7 +2,7 @@
 import unittest
 from lxml import etree as ET
 
-import pipeline_xml
+from updatepreprint import pipeline_xml
 
 
 namespaces = {'dc': 'http://purl.org/dc/elements/1.1/',
