@@ -51,7 +51,7 @@ class TestDocumentID(unittest.TestCase):
         raw = ET.fromstring(text)
         data = raw, xml
         raw, xml = pipeline_xml.DocumentID().transform(data)
-        self.assertEqual(xml.find(".//field[@name='id']").text, '10.1590/scielopreprints.7')
+        self.assertEqual(xml.find(".//field[@name='id']").text, 'preprint_7')
 
 
 # <field name="ur">art-S1980-993X2015000200234</field>
@@ -420,8 +420,9 @@ class TestPermission(unittest.TestCase):
         raw = ET.fromstring(text)
         data = raw, xml
         raw, xml = pipeline_xml.Permission().transform(data)
+
         self.assertEqual(
-            xml.find(".//field[@name='use_license']").text,
+            xml.find(".//field[@name='use_license_ur']").text,
             "https://creativecommons.org/licenses/by/4.0"
         )
         self.assertEqual(

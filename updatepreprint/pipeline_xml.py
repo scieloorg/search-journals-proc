@@ -68,9 +68,9 @@ class DocumentID(plumber.Pipe):
         raw, xml = data
 
         for identifier in raw.findall(xpath, namespaces=ns):
-            if not identifier.text.startswith('http'):
+            if identifier.text.startswith('http'):
                 field = ET.Element('field')
-                field.text = identifier.text
+                field.text = "preprint_%s" % (identifier.text.split('/')[-1])
                 field.set('name', 'id')
                 xml.find('.').append(field)
 
