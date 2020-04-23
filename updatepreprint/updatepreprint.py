@@ -13,8 +13,9 @@ from datetime import datetime, timedelta
 from lxml import etree as ET
 
 import plumber
-from updatepreprint import pipeline_xml
+import pipeline_xml
 from sickle import Sickle
+from sickle.oaiexceptions import NoRecordsMatch
 
 from SolrAPI import Solr
 
@@ -30,7 +31,7 @@ class UpdatePreprint(object):
 
     parser = argparse.ArgumentParser(textwrap.dedent(usage))
 
-    parser.add_argument('-p', '--period',
+    parser.add_argument('-t', '--time',
                         type=int,
                         help='index articles from specific period, use number of hours.')
 
@@ -69,8 +70,8 @@ class UpdatePreprint(object):
         else:
             self.solr = Solr(solr_url, timeout=10)
 
-        if self.args.period:
-            self.from_date = datetime.now() - timedelta(hours=self.args.period)
+        if self.args.time:
+            self.from_date = datetime.now() - timedelta(hours=self.args.time)
 
     def pipeline_to_xml(self, article):
         """
@@ -123,23 +124,30 @@ class UpdatePreprint(object):
 
             sickle = Sickle(self.args.oai_url, verify=False)
 
-            records = sickle.ListRecords(**{
-                                        'metadataPrefix': 'oai_dc',
-                                        'from': self.from_date.strftime("%Y-%m-%dT%H:%M:%SZ")
-                                        })
+            filters = {'metadataPrefix': 'oai_dc'}
 
-            for record in records:
-                try:
-                    xml = self.pipeline_to_xml(record.xml)
-                    self.solr.update(xml, commit=True)
-                except ValueError as e:
-                    print("ValueError: {0}".format(e))
-                    print(e)
-                    continue
-                except Exception as e:
-                    print("Error: {0}".format(e))
-                    print(e)
-                    continue
+            if self.args.time:
+                filters['from'] = self.from_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+            try:
+                records = sickle.ListRecords(**filters)
+            except NoRecordsMatch as e:
+                print(e)
+                sys.exit(0)
+            else:
+
+                for record in records:
+                    try:
+                        xml = self.pipeline_to_xml(record.xml)
+                        self.solr.update(xml, commit=True)
+                    except ValueError as e:
+                        print("ValueError: {0}".format(e))
+                        print(e)
+                        continue
+                    except Exception as e:
+                        print("Error: {0}".format(e))
+                        print(e)
+                        continue
 
         # optimize the index
         self.solr.commit()
