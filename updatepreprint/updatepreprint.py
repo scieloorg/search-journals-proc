@@ -7,51 +7,17 @@ import os
 import sys
 import time
 import argparse
-import logging
-import logging.config
 import textwrap
 from datetime import datetime, timedelta
 
 from lxml import etree as ET
 
 import plumber
-from updatepreprint import pipeline_xml
+import pipeline_xml
 from sickle import Sickle
+from sickle.oaiexceptions import NoRecordsMatch
 
 from SolrAPI import Solr
-
-logger = logging.getLogger(__name__)
-
-LOGGING_LEVEL = os.environ.get('LOGGING_LEVEL', 'DEBUG')
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-
-    'formatters': {
-        'console': {
-            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            'datefmt': '%H:%M:%S',
-            },
-        },
-    'handlers': {
-        'console': {
-            'level': LOGGING_LEVEL,
-            'class': 'logging.StreamHandler',
-            'formatter': 'console'
-            }
-        },
-    'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': LOGGING_LEVEL,
-            'propagate': False,
-            },
-        'updatepreprint.updatepreprint': {
-            'level': LOGGING_LEVEL,
-            'propagate': True,
-        },
-    }
-}
 
 
 class UpdatePreprint(object):
@@ -65,7 +31,7 @@ class UpdatePreprint(object):
 
     parser = argparse.ArgumentParser(textwrap.dedent(usage))
 
-    parser.add_argument('-p', '--period',
+    parser.add_argument('-t', '--time',
                         type=int,
                         help='index articles from specific period, use number of hours.')
 
@@ -81,18 +47,6 @@ class UpdatePreprint(object):
                         dest='oai_url',
                         default="http://preprints.scielo.org/index.php/scielo/oai",
                         help='OAI URL, processing try to get the variable from environment ``OAI_URL`` otherwise use --oai_url to set the oai_url (preferable).')
-
-    parser.add_argument('--logging_level', '-l',
-                        default=LOGGING_LEVEL,
-                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
-                        help='Logggin level')
-
-    args = parser.parse_args()
-    LOGGING['handlers']['console']['level'] = args.logging_level
-    for lg, content in LOGGING['loggers'].items():
-        content['level'] = args.logging_level
-
-    logging.config.dictConfig(LOGGING)
 
     parser.add_argument('-v', '--version',
                         action='version',
@@ -116,8 +70,8 @@ class UpdatePreprint(object):
         else:
             self.solr = Solr(solr_url, timeout=10)
 
-        if self.args.period:
-            self.from_date = datetime.now() - timedelta(hours=self.args.period)
+        if self.args.time:
+            self.from_date = datetime.now() - timedelta(hours=self.args.time)
 
     def pipeline_to_xml(self, article):
         """
@@ -141,6 +95,7 @@ class UpdatePreprint(object):
             pipeline_xml.Titles(),
             pipeline_xml.Abstract(),
             pipeline_xml.Authors(),
+            pipeline_xml.AvailableLanguages(),
 
             pipeline_xml.TearDown()
         )
@@ -166,27 +121,35 @@ class UpdatePreprint(object):
 
         else:
 
-            logger.info("Indexing in {0}".format(self.solr.url))
+            print("Indexing in {0}".format(self.solr.url))
 
             sickle = Sickle(self.args.oai_url, verify=False)
 
-            records = sickle.ListRecords(**{
-                                        'metadataPrefix': 'oai_dc',
-                                        'from': self.from_date.strftime("%Y-%m-%dT%H:%M:%SZ")
-                                        })
+            filters = {'metadataPrefix': 'oai_dc'}
 
-            for record in records:
-                try:
-                    xml = self.pipeline_to_xml(record.xml)
-                    self.solr.update(xml, commit=True)
-                except ValueError as e:
-                    logger.error("ValueError: {0}".format(e))
-                    logger.exception(e)
-                    continue
-                except Exception as e:
-                    logger.error("Error: {0}".format(e))
-                    logger.exception(e)
-                    continue
+            if self.args.time:
+                filters['from'] = self.from_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+            try:
+                records = sickle.ListRecords(**filters)
+            except NoRecordsMatch as e:
+                print(e)
+                sys.exit(0)
+            else:
+
+                for i, record in enumerate(records):
+                    try:
+                        xml = self.pipeline_to_xml(record.xml)
+                        print("Indexing record %s with oai id: %s" % (i, record.header.identifier))
+                        self.solr.update(xml, commit=True)
+                    except ValueError as e:
+                        print("ValueError: {0}".format(e))
+                        print(e)
+                        continue
+                    except Exception as e:
+                        print("Error: {0}".format(e))
+                        print(e)
+                        continue
 
         # optimize the index
         self.solr.commit()
@@ -208,7 +171,7 @@ def main():
         print("Duration {0} seconds.".format(end-start))
 
     except KeyboardInterrupt:
-        logger.critical("Interrupt by user")
+        print("Interrupt by user")
 
 if __name__ == "__main__":
 
