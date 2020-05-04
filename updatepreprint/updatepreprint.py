@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from lxml import etree as ET
 
 import plumber
-import pipeline_xml
+from updatepreprint import pipeline_xml
 from sickle import Sickle
 from sickle.oaiexceptions import NoRecordsMatch
 
