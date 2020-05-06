@@ -176,3 +176,25 @@ class DocumentID(plumber.Pipe):
         return data
 
 
+class Edition(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.edition:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = raw.edition
+        field.set('name', 'cit_edition')
+
+        xml.find('.').append(field)
+
+        return data
+
+
