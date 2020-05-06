@@ -130,3 +130,49 @@ class Collection(plumber.Pipe):
 
         return data
 
+
+class DocumentFK(plumber.Pipe):
+    """
+    Adiciona no <doc> citation id do documento citante.
+    """
+
+    def __init__(self, collection):
+        self.collection = collection
+
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+
+        # Ignores the last five numbers; these are for reference ids
+        cit_id = raw.data['v880'][0]['_'][:-5]
+        cit_full_id = '{0}-{1}'.format(cit_id, self.collection)
+
+        field.text = cit_full_id
+        field.set('name', 'document_fk')
+
+        xml.find('.').append(field)
+
+        return data
+
+
+class DocumentID(plumber.Pipe):
+
+    def __init__(self, collection):
+        self.collection = collection
+
+    def transform(self, data):
+        raw, xml = data
+
+        cit_id = raw.data['v880'][0]['_']
+        cit_full_id = '{0}-{1}'.format(cit_id, self.collection)
+
+        field = ET.Element('field')
+        field.text = cit_full_id
+        field.set('name', 'id')
+
+        xml.find('.').append(field)
+
+        return data
+
+
