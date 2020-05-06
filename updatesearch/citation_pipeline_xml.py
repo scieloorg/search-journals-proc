@@ -113,3 +113,20 @@ class ChapterTitle(plumber.Pipe):
 
         return data
 
+
+class Collection(plumber.Pipe):
+
+    def __init__(self, collection):
+        self.collection = collection
+
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = self.collection
+        field.set('name', 'in')
+
+        xml.find('.').append(field)
+
+        return data
+
