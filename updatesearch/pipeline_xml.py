@@ -51,6 +51,11 @@ CITABLE_DOCUMENT_TYPES = (
     u'review-article'
 )
 
+CITATION_ALLOWED_TYPES = (
+    u'article',
+    u'book'
+)
+
 
 class SetupDocument(plumber.Pipe):
 
