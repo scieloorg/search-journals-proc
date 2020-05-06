@@ -156,8 +156,7 @@ class UpdateSearch(object):
         :param doc: um ET.Element raiz
         """
         for raw, xml in pipeline_results:
-            for field in xml:
-                doc.find('.').append(field)
+            doc.find('.').extend(xml)
 
     def pipeline_to_xml(self, article):
         """
@@ -217,8 +216,7 @@ class UpdateSearch(object):
 
             cit_xmls, citations_fk_doc = self.get_xmls_citations(article)
 
-            for cit_xml in cit_xmls:
-                add.append(cit_xml)
+            add.extend(cit_xmls)
 
             # Completa pipeline de artigo com informações estrangeiras das referências citadas
             self.add_fields_to_doc(article_pipeline_results, citations_fk_doc)
@@ -229,8 +227,7 @@ class UpdateSearch(object):
             pipeline_itens.append(pipeline_xml.TearDown())
             article_pipeline_results = plumber.Pipeline(*pipeline_itens).run([article])
 
-            for tag in article_pipeline_results:
-                add.append(tag)
+            add.extend(article_pipeline_results)
 
         return ET.tostring(add, encoding="utf-8", method="xml")
 
@@ -333,8 +330,7 @@ class UpdateSearch(object):
                     self.add_fields_to_doc(citation_pipeline_results, citation_doc)
 
                     # Adiciona tags do documento citante no documento citação
-                    for tag in deepcopy(article_fk_doc):
-                        citation_doc.append(tag)
+                    citation_doc.extend(deepcopy(article_fk_doc))
 
                     citations_xmls.append(citation_doc)
 
