@@ -283,3 +283,29 @@ class IndexNumber(plumber.Pipe):
         return data
 
 
+class Institutions(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.institutions:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        for institution in raw.institutions:
+            cleaned_institution_name = fs.remove_endpoint(institution)
+
+            if cleaned_institution_name:
+                field = ET.Element('field')
+                field.text = cleaned_institution_name
+                field.set('name', 'cit_inst')
+
+                xml.find('.').append(field)
+
+        return data
+
+
