@@ -111,19 +111,40 @@ class UpdateSearch(object):
         """
         normalization_file = os.path.basename(path_external_data)
         if normalization_file.endswith('.zip'):
-            json_normalization_file = normalization_file[:-4]
-            with zipfile.ZipFile(path_external_data).open(json_normalization_file) as zf:
-                try:
-                    return json.loads(zf.read()).get('metadata', {})
-                except Exception as e:
-                    print("ValueError: {0}".format(e))
-                    logger.exception(e)
-                    return {}
+            try:
+                with zipfile.ZipFile(path_external_data) as zf:
+                    if zf.namelist():
+                        first_json = zf.namelist()[0]
+                        data = zf.read(first_json)
+                        return json.loads(data).get('metadata', {})
+                    else:
+                        return {}
+            except FileNotFoundError as e:
+                logger.error('FileNotFoundError: {0}'.format(e))
+                logger.exception(e)
+                return {}
+            except json.JSONDecodeError as e:
+                logger.error('JSONDecodeError: {0}'.format(e))
+                logger.exception(e)
+                return {}
+            except Exception as e:
+                logger.error('Error: {0}'.format(e))
+                logger.exception(e)
+                return {}
         else:
             try:
-                return json.loads(open(path_external_data).read()).get('metadata', {})
+                with open(path_external_data) as f:
+                    return json.loads(f.read()).get('metadata', {})
+            except FileNotFoundError as e:
+                logger.error("FileNotFoundError: {0}".format(e))
+                logger.exception(e)
+                return {}
+            except json.JSONDecodeError as e:
+                logger.error("JSONDecodeError: {0}".format(e))
+                logger.exception(e)
+                return {}
             except Exception as e:
-                print("ValueError: {0}".format(e))
+                logger.error('Error: {0}'.format(e))
                 logger.exception(e)
                 return {}
 
