@@ -71,7 +71,7 @@ class UpdateSearch(object):
 
     def __init__(self, period=None, from_date=None, until_date=None,
                  collection=None, issn=None, delete=False, differential=False,
-                 load_indicators=False):
+                 load_indicators=False, include_cited_references=False, external_metadata=None):
         self.delete = delete
         self.collection = collection
         self.from_date = from_date
@@ -82,6 +82,9 @@ class UpdateSearch(object):
         self.solr = Solr(SOLR_URL, timeout=10)
         if period:
             self.from_date = datetime.now() - timedelta(days=period)
+        self.include_cited_references = include_cited_references
+        if external_metadata:
+            self.external_metadata = self.load_external_metadata(external_metadata)
 
     def format_date(self, date):
         """
@@ -95,6 +98,35 @@ class UpdateSearch(object):
             return None
 
         return date.strftime('%Y-%m-%d')
+
+    def load_external_metadata(self, path_external_data):
+        """
+        Lê arquivo com dados extras e normalizados de citações.
+        Chave de cada registro é o id da citação.
+        Valor de cada registro é o conjunto de campos extras e normalizados da citação.
+        Caso path_external_data refira-se a um arquivo compactado, o json normalizador deve estar na sua raiz.
+
+        :param path_external_data: caminho para dados normalizados de citações
+
+        :returns: dict
+        """
+        normalization_file = os.path.basename(path_external_data)
+        if normalization_file.endswith('.zip'):
+            json_normalization_file = normalization_file[:-4]
+            with zipfile.ZipFile(path_external_data).open(json_normalization_file) as zf:
+                try:
+                    return json.loads(zf.read()).get('metadata', {})
+                except Exception as e:
+                    print("ValueError: {0}".format(e))
+                    logger.exception(e)
+                    return {}
+        else:
+            try:
+                return json.loads(open(path_external_data).read()).get('metadata', {})
+            except Exception as e:
+                print("ValueError: {0}".format(e))
+                logger.exception(e)
+                return {}
 
     def pipeline_to_xml(self, article):
         """
@@ -378,6 +410,19 @@ def main():
         help='Logggin level'
     )
 
+    parser.add_argument(
+        '--include_cited_references',
+        '-r',
+        action='store_true',
+        help='include cited references in the indexing process'
+    )
+
+    parser.add_argument(
+        '-m', '--external_metadata',
+        default=None,
+        help='json composed of external citations metadata'
+    )
+
     args = parser.parse_args()
     LOGGING['handlers']['console']['level'] = args.logging_level
     for lg, content in LOGGING['loggers'].items():
@@ -396,7 +441,9 @@ def main():
             issn=args.issn,
             delete=args.delete,
             differential=args.differential,
-            load_indicators=args.load_indicators
+            load_indicators=args.load_indicators,
+            include_cited_references=args.include_cited_references,
+            external_metadata=args.external_metadata
         )
         us.run()
     except KeyboardInterrupt:
