@@ -986,3 +986,28 @@ class ExportTests(unittest.TestCase):
             self.assertTrue(True)
         else:
             self.assertTrue(False)
+            
+    def test_xml_entity(self):
+        pxml = ET.Element('doc')
+
+        data = [self._article_meta, pxml]
+
+        xmlarticle = pipeline_xml.Entity()
+        raw, xml = xmlarticle.transform(data)
+
+        result = xml.find('./field[@name="entity"]').text
+        self.assertEqual('document', result)
+
+    def test_xml_entity_without_pipe(self):
+        fakexylosearticle = Article({'article': {}, 'title': {}})
+
+        pxml = ET.Element('doc')
+
+        data = [fakexylosearticle, pxml]
+
+        xmlarticle = pipeline_xml.Entity()
+
+        raw, xml = xmlarticle.transform(data)
+
+        self.assertIsNone(xml.find('./field[name="start_page"]'))
+
