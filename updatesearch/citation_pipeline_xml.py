@@ -568,3 +568,23 @@ class Title(plumber.Pipe):
         return data
 
 
+class Volume(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.volume:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = raw.volume
+        field.set('name', 'volume')
+
+        xml.find('.').append(field)
+
+        return data
