@@ -906,6 +906,23 @@ class CitationsFKData(plumber.Pipe):
         return data
 
 
+class Entity(plumber.Pipe):
+
+    def __init__(self, name='document'):
+        self.name = name
+
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = self.name
+        field.set('name', 'entity')
+
+        xml.find('.').append(field)
+
+        return data
+
+
 class TearDown(plumber.Pipe):
 
     def transform(self, data):
