@@ -411,6 +411,13 @@ class MonographicAuthors(plumber.Pipe):
 
 class PublicationDate(plumber.Pipe):
 
+    def precond(data):
+        raw, xml = data
+
+        if not raw.publication_date:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
     def transform(self, data):
         raw, xml = data
 
