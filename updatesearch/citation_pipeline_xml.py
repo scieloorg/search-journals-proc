@@ -29,7 +29,7 @@ class AnalyticAuthors(plumber.Pipe):
                 name.append(author['given_names'])
 
             fullname = ', '.join(name)
-            cleaned_fullname = fs.remove_endpoint(fullname)
+            cleaned_fullname = fs.remove_period(fullname)
 
             if cleaned_fullname:
                 field.text = cleaned_fullname
@@ -63,7 +63,7 @@ class Authors(plumber.Pipe):
                 name.append(author['given_names'])
 
             fullname = ', '.join(name)
-            cleaned_fullname = fs.remove_endpoint(fullname)
+            cleaned_fullname = fs.remove_period(fullname)
 
             if cleaned_fullname:
                 field.text = cleaned_fullname
@@ -96,7 +96,7 @@ class ChapterTitle(plumber.Pipe):
         raw, xml = data
 
         chapter_title = raw.chapter_title
-        cleaned_chapter_title = fs.remove_endpoint(chapter_title)
+        cleaned_chapter_title = fs.remove_period(chapter_title)
 
         if cleaned_chapter_title:
             field = ET.Element('field')
@@ -297,7 +297,7 @@ class Institutions(plumber.Pipe):
         raw, xml = data
 
         for institution in raw.institutions:
-            cleaned_institution_name = fs.remove_endpoint(institution)
+            cleaned_institution_name = fs.remove_period(institution)
 
             if cleaned_institution_name:
                 field = ET.Element('field')
@@ -399,7 +399,7 @@ class MonographicAuthors(plumber.Pipe):
                 name.append(author['given_names'])
 
             fullname = ', '.join(name)
-            cleaned_fullname = fs.remove_endpoint(fullname)
+            cleaned_fullname = fs.remove_period(fullname)
 
             if cleaned_fullname:
                 field.text = cleaned_fullname
@@ -459,7 +459,7 @@ class Publisher(plumber.Pipe):
     def transform(self, data):
         raw, xml = data
 
-        cleaned_publisher = fs.remove_endpoint(raw.publisher)
+        cleaned_publisher = fs.remove_period(raw.publisher)
 
         if cleaned_publisher:
             field = ET.Element('field')
@@ -484,7 +484,7 @@ class PublisherAddress(plumber.Pipe):
     def transform(self, data):
         raw, xml = data
 
-        cleaned_publisher_address = fs.remove_endpoint(raw.publisher_address)
+        cleaned_publisher_address = fs.remove_period(raw.publisher_address)
 
         if cleaned_publisher_address:
             field = ET.Element('field')
@@ -530,7 +530,7 @@ class Source(plumber.Pipe):
     def transform(self, data):
         raw, xml = data
 
-        cleaned_source = fs.remove_endpoint(raw.source)
+        cleaned_source = fs.remove_period(raw.source)
         if cleaned_source:
             field = ET.Element('field')
             field.text = cleaned_source
@@ -556,7 +556,7 @@ class Title(plumber.Pipe):
     def transform(self, data):
         raw, xml = data
 
-        cleaned_title = fs.remove_endpoint(raw.title())
+        cleaned_title = fs.remove_period(raw.title())
 
         if cleaned_title:
             field = ET.Element('field')
