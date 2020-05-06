@@ -18,9 +18,9 @@ DATE_ERROR_LEVEL_EMPTY = 4
 AUTHOR_ERROR_LEVEL_CHAR = 1
 
 # A initial version of a list of invalid chars (for checking author's fullname)
-INVALID_CHARS = [u'@', u'≈', u'≠', u'‼', u'∗', u'¾', u'²', u'}', u'=', u'‰', u'¶', u'±', u'³', u'©', u'¼', u'[', u']',
+INVALID_CHARS = {u'@', u'≈', u'≠', u'‼', u'∗', u'¾', u'²', u'}', u'=', u'‰', u'¶', u'±', u'³', u'©', u'¼', u'[', u']',
                  u'#', u'?', u')', '(', u'{', u'0', u'1', u'2', u'3', u'4', u'5', u'6', u'7', u'8', u'9', u'!', u'¡',
-                 u'¿', u'«', u'»', u'*', u'/', u'\\', u'&', u'%', u'‖', u'§', u'®', u'¹', u'½']
+                 u'¿', u'«', u'»', u'*', u'/', u'\\', u'&', u'%', u'‖', u'§', u'®', u'¹', u'½'}
 
 
 class FieldSanitizer(object):
