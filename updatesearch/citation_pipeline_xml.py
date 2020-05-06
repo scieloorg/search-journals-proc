@@ -133,7 +133,8 @@ class Collection(plumber.Pipe):
 
 class DocumentFK(plumber.Pipe):
     """
-    Adiciona no <doc> citation id do documento citante.
+    Adiciona no XML da citação o id (pid) do documento citante.
+    O campo document_fk é a chave estrangeira do documento citante.
     """
 
     def __init__(self, collection):
