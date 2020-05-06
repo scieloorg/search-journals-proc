@@ -517,3 +517,54 @@ class Serie(plumber.Pipe):
         return data
 
 
+class Source(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.source:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        cleaned_source = fs.remove_endpoint(raw.source)
+        if cleaned_source:
+            field = ET.Element('field')
+            field.text = cleaned_source
+            if raw.publication_type == 'article':
+                field.set('name', 'cit_journal_title')
+            else:
+                field.set('name', 'cit_source')
+
+            xml.find('.').append(field)
+
+            if raw.publication_type == 'book':
+                field = ET.Element('field')
+                field.text = cleaned_source
+                field.set('name', 'ti')
+
+                xml.find('.').append(field)
+
+        return data
+
+
+class Title(plumber.Pipe):
+
+    def transform(self, data):
+        raw, xml = data
+
+        cleaned_title = fs.remove_endpoint(raw.title())
+
+        if cleaned_title:
+            field = ET.Element('field')
+            field.text = cleaned_title
+            field.set('name', 'ti')
+
+            xml.find('.').append(field)
+
+        return data
+
+
