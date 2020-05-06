@@ -309,3 +309,47 @@ class Institutions(plumber.Pipe):
         return data
 
 
+class ISBN(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.isbn:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = raw.isbn
+        field.set('name', 'cit_isbn')
+
+        xml.find('.').append(field)
+
+        return data
+
+
+class ISSN(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.issn:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = raw.issn
+        field.set('name', 'cit_issn')
+
+        xml.find('.').append(field)
+
+        return data
+
+
