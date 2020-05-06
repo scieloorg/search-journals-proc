@@ -11,8 +11,7 @@ import zipfile
 from copy import deepcopy
 from datetime import datetime, timedelta
 
-import citation_pipeline_xml
-import pipeline_xml
+from updatesearch import pipeline_xml, citation_pipeline_xml
 import plumber
 from SolrAPI import Solr
 from lxml import etree as ET

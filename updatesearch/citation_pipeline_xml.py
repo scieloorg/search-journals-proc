@@ -1,6 +1,6 @@
 # coding: utf-8
 from lxml import etree as ET
-from field_sanitizer import FieldSanitizer as fs
+from updatesearch.field_sanitizer import FieldSanitizer as fs
 
 import plumber
 
