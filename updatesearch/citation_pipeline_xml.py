@@ -446,3 +446,53 @@ class PublicationType(plumber.Pipe):
         return data
 
 
+class Publisher(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.publisher:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        cleaned_publisher = fs.remove_endpoint(raw.publisher)
+
+        if cleaned_publisher:
+            field = ET.Element('field')
+            field.text = cleaned_publisher
+            field.set('name', 'cit_publisher')
+
+            xml.find('.').append(field)
+
+        return data
+
+
+class PublisherAddress(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.publisher_address:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        cleaned_publisher_address = fs.remove_endpoint(raw.publisher_address)
+
+        if cleaned_publisher_address:
+            field = ET.Element('field')
+            field.text = cleaned_publisher_address
+            field.set('name', 'cit_publisher_address')
+
+            xml.find('.').append(field)
+
+        return data
+
+
