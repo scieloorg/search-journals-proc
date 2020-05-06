@@ -264,6 +264,9 @@ class URL(plumber.Pipe):
 
 class Authors(plumber.Pipe):
 
+    def __init__(self, field_name='au'):
+        self.field_name = field_name
+
     def precond(data):
 
         raw, xml = data
@@ -287,7 +290,7 @@ class Authors(plumber.Pipe):
 
             field.text = ', '.join(name)
 
-            field.set('name', 'au')
+            field.set('name', self.field_name)
             xml.find('.').append(field)
 
         return data
