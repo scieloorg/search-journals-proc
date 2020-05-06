@@ -496,3 +496,24 @@ class PublisherAddress(plumber.Pipe):
         return data
 
 
+class Serie(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.serie:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = raw.serie
+        field.set('name', 'cit_serie')
+        xml.find('.').append(field)
+
+        return data
+
+
