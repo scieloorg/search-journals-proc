@@ -81,3 +81,35 @@ class Authors(plumber.Pipe):
 
         return data
 
+
+class ChapterTitle(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.chapter_title:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        chapter_title = raw.chapter_title
+        cleaned_chapter_title = fs.remove_endpoint(chapter_title)
+
+        if cleaned_chapter_title:
+            field = ET.Element('field')
+            field.text = cleaned_chapter_title
+            field.set('name', 'ti')
+
+            xml.find('.').append(field)
+
+            field = ET.Element('field')
+            field.text = cleaned_chapter_title
+            field.set('name', 'cit_chapter_title')
+
+            xml.find('.').append(field)
+
+        return data
+
