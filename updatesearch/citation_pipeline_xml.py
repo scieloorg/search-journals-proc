@@ -432,3 +432,17 @@ class PublicationDate(plumber.Pipe):
         return data
 
 
+class PublicationType(plumber.Pipe):
+
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = raw.publication_type
+        field.set('name', 'cit_type')
+
+        xml.find('.').append(field)
+
+        return data
+
+
