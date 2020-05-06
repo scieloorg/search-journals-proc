@@ -48,7 +48,7 @@ class FieldSanitizer(object):
                 return AUTHOR_ERROR_LEVEL_CHAR
 
     @staticmethod
-    def remove_endpoint(text):
+    def remove_period(text):
         while text.endswith('.'):
             text = text[:-1]
         return text
