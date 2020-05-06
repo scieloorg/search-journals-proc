@@ -353,3 +353,25 @@ class ISSN(plumber.Pipe):
         return data
 
 
+class Issue(plumber.Pipe):
+
+    def precond(data):
+
+        raw, xml = data
+
+        if not raw.issue:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = raw.issue
+        field.set('name', 'issue')
+
+        xml.find('.').append(field)
+
+        return data
+
+
