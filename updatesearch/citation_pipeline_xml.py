@@ -409,3 +409,26 @@ class MonographicAuthors(plumber.Pipe):
         return data
 
 
+class PublicationDate(plumber.Pipe):
+
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = raw.publication_date
+        field.set('name', 'da')
+
+        xml.find('.').append(field)
+
+        da_quality_level = fs.get_date_quality(raw.publication_date)
+
+        if da_quality_level:
+            field = ET.Element('field')
+            field.text = str(da_quality_level)
+            field.set('name', 'cit_da_quality_level')
+
+            xml.find('.').append(field)
+
+        return data
+
+
