@@ -198,3 +198,74 @@ class Edition(plumber.Pipe):
         return data
 
 
+class ExternalMetaData(plumber.Pipe):
+    """
+    Adiciona no <doc> citation dados extras e normalizados de citação.
+
+    :param external_metadata: dicionário com dados extras e normalizados
+    :param collection_acronym: coleção do documento citante
+    """
+
+    def __init__(self, external_metadata, collection):
+        self.external_metadata = external_metadata
+        self.collection = collection
+
+    def transform(self, data):
+        raw, xml = data
+
+        cit_id = raw.data['v880'][0]['_']
+        cit_full_id = '{0}-{1}'.format(cit_id, self.collection)
+        cit_metadata = self.external_metadata.get(cit_full_id, {'type': None})
+
+        if cit_metadata['type'] == 'journal-article':
+            was_normalized = False
+            journal_titles = cit_metadata.get('container-title', [])
+            first_journal_title = journal_titles[0] if len(journal_titles) else None
+            if first_journal_title:
+                field = ET.Element('field')
+                field.text = first_journal_title
+                field.set('name', 'cit_journal_title_canonical')
+
+                xml.find('.').append(field)
+
+                was_normalized = True
+
+            for i in cit_metadata.get('ISSN', []):
+                field = ET.Element('field')
+                field.text = i
+                field.set('name', 'cit_journal_issn_canonical')
+
+                xml.find('.').append(field)
+
+                was_normalized = True
+
+            for i in cit_metadata.get('BC1-ISSNS', []):
+                field = ET.Element('field')
+                field.text = i
+                field.set('name', 'cit_journal_issn_normalized')
+
+                xml.find('.').append(field)
+
+                was_normalized = True
+
+            for i in cit_metadata.get('BC1-JOURNAL-TITLES', []):
+                field = ET.Element('field')
+                field.text = i
+                field.set('name', 'cit_journal_title_normalized')
+
+                xml.find('.').append(field)
+
+                was_normalized = True
+
+            if was_normalized:
+                normalization_status = cit_metadata['normalization-status']
+
+                field = ET.Element('field')
+                field.text = normalization_status
+                field.set('name', 'cit_normalization_status')
+
+                xml.find('.').append(field)
+
+        return data
+
+
