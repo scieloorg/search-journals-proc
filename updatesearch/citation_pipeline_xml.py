@@ -221,10 +221,9 @@ class ExternalMetaData(plumber.Pipe):
         if cit_metadata['type'] == 'journal-article':
             was_normalized = False
             journal_titles = cit_metadata.get('container-title', [])
-            first_journal_title = journal_titles[0] if len(journal_titles) else None
-            if first_journal_title:
+            if journal_titles:
                 field = ET.Element('field')
-                field.text = first_journal_title
+                field.text = journal_titles[0]
                 field.set('name', 'cit_journal_title_canonical')
 
                 xml.find('.').append(field)
