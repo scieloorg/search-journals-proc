@@ -420,6 +420,7 @@ class PublicationDate(plumber.Pipe):
 
         xml.find('.').append(field)
 
+        # da_quality_level é utilizado para sabermos o nível de consistência (limpeza) do campo "raw.publication_date"
         da_quality_level = fs.get_date_quality(raw.publication_date)
 
         if da_quality_level:

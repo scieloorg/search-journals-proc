@@ -27,6 +27,20 @@ class FieldSanitizer(object):
 
     @staticmethod
     def get_date_quality(date):
+        """ Identify the consistence (quality) of a date according to the following rules:
+
+        (a) If date has no chars, the method returns DATE_ERROR_LEVEL_EMPTY
+        (b) If date has less than four digits, the method returns DATE_ERROR_LEVEL_SIZE
+        (c) If date is composed of chars others than digits, the method returns DATE_ERROR_LEVEL_CHAR
+        (d) If date represents an year less than 1000 or greater than the current year,  the method returns
+        DATE_ERROR_LEVEL_VALUE.
+
+        We are supposing that a citation whose year of publication date is less than 1000, is probably a citation with
+        an invalid publication date.
+
+        :param date: date (YYYY-MM-DD)
+        :return: an int representing the consistency (quality) of the date
+        """
         if not date:
             return DATE_ERROR_LEVEL_EMPTY
 
