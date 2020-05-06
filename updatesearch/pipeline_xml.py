@@ -173,26 +173,15 @@ class DocumentID(plumber.Pipe):
 
 class JournalTitle(plumber.Pipe):
 
-    def transform(self, data):
-        raw, xml = data
-
-        field = ET.Element('field')
-        field.text = raw.journal.title
-        field.set('name', 'journal_title')
-
-        xml.find('.').append(field)
-
-        return data
-
-
-class JournalTitle(plumber.Pipe):
+    def __init__(self, field_name='journal_title'):
+        self.field_name = field_name
 
     def transform(self, data):
         raw, xml = data
 
         field = ET.Element('field')
         field.text = raw.journal.title
-        field.set('name', 'journal_title')
+        field.set('name', self.field_name)
 
         xml.find('.').append(field)
 
