@@ -581,12 +581,15 @@ class EndPage(plumber.Pipe):
 
 class JournalAbbrevTitle(plumber.Pipe):
 
+    def __init__(self, field_name='ta'):
+        self.field_name = field_name
+
     def transform(self, data):
         raw, xml = data
 
         field = ET.Element('field')
         field.text = raw.journal.abbreviated_title
-        field.set('name', 'ta')
+        field.set('name', self.field_name)
         xml.find('.').append(field)
 
         return data
