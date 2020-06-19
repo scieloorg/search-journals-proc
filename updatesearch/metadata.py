@@ -5,19 +5,21 @@ import json
 import logging
 import logging.config
 import os
+import plumber
 import textwrap
 import time
-import zipfile
-from copy import deepcopy
-from datetime import datetime, timedelta
-
-from updatesearch import pipeline_xml, citation_pipeline_xml
-import plumber
-from SolrAPI import Solr
-from lxml import etree as ET
 
 from articlemeta.client import ThriftClient
+from copy import deepcopy
+from datetime import datetime, timedelta
+from lxml import etree as ET
+from SolrAPI import Solr
+from pymongo import MongoClient, uri_parser
+from updatesearch import pipeline_xml, citation_pipeline_xml
+from xylose.scielodocument import Article
 
+
+MONGO_STDCITS_COLLECTION = os.environ.get('MONGO_STDCITS_COLLECTION', 'standardized')
 
 logger = logging.getLogger(__name__)
 
@@ -68,9 +70,18 @@ class UpdateSearch(object):
     Process to get article in article meta and index in Solr.
     """
 
-    def __init__(self, period=None, from_date=None, until_date=None,
-                 collection=None, issn=None, delete=False, differential=False,
-                 load_indicators=False, include_cited_references=False, external_metadata=None):
+    def __init__(self,
+                 period=None,
+                 from_date=None,
+                 until_date=None,
+                 collection=None,
+                 issn=None,
+                 delete=False,
+                 differential=False,
+                 load_indicators=False,
+                 include_cited_references=False,
+                 load_standardized_cited_references=False,
+                 mongo_uri_std_cits=None):
         self.delete = delete
         self.collection = collection
         self.from_date = from_date
@@ -82,8 +93,16 @@ class UpdateSearch(object):
         if period:
             self.from_date = datetime.now() - timedelta(days=period)
         self.include_cited_references = include_cited_references
-        if external_metadata:
-            self.external_metadata = self.load_external_metadata(external_metadata)
+
+        if load_standardized_cited_references and mongo_uri_std_cits:
+            try:
+                mongo_col = uri_parser.parse_uri(mongo_uri_std_cits).get('collection')
+                if not mongo_col:
+                    mongo_col = MONGO_STDCITS_COLLECTION
+                self.standardizer = MongoClient(mongo_uri_std_cits).get_database().get_collection(mongo_col)
+            except ConnectionError as e:
+                logging.error('ConnectionError %s' % mongo_uri_std_cits)
+                logging.error(e)
 
     def format_date(self, date):
         """
@@ -97,56 +116,6 @@ class UpdateSearch(object):
             return None
 
         return date.strftime('%Y-%m-%d')
-
-    def load_external_metadata(self, path_external_data):
-        """
-        Lê arquivo com dados extras e normalizados de citações.
-        Chave de cada registro é o id da citação.
-        Valor de cada registro é o conjunto de campos extras e normalizados da citação.
-        Caso path_external_data refira-se a um arquivo compactado, o json normalizador deve estar na sua raiz.
-
-        :param path_external_data: caminho para dados normalizados de citações
-
-        :returns: dict
-        """
-        normalization_file = os.path.basename(path_external_data)
-        if normalization_file.endswith('.zip'):
-            try:
-                with zipfile.ZipFile(path_external_data) as zf:
-                    if zf.namelist():
-                        first_json = zf.namelist()[0]
-                        data = zf.read(first_json)
-                        return json.loads(data).get('metadata', {})
-                    else:
-                        return {}
-            except FileNotFoundError as e:
-                logger.error('FileNotFoundError: {0}'.format(e))
-                logger.exception(e)
-                return {}
-            except json.JSONDecodeError as e:
-                logger.error('JSONDecodeError: {0}'.format(e))
-                logger.exception(e)
-                return {}
-            except Exception as e:
-                logger.error('Error: {0}'.format(e))
-                logger.exception(e)
-                return {}
-        else:
-            try:
-                with open(path_external_data) as f:
-                    return json.loads(f.read()).get('metadata', {})
-            except FileNotFoundError as e:
-                logger.error("FileNotFoundError: {0}".format(e))
-                logger.exception(e)
-                return {}
-            except json.JSONDecodeError as e:
-                logger.error("JSONDecodeError: {0}".format(e))
-                logger.exception(e)
-                return {}
-            except Exception as e:
-                logger.error('Error: {0}'.format(e))
-                logger.exception(e)
-                return {}
 
     def add_fields_to_doc(self, pipeline_results, doc):
         """
@@ -278,10 +247,10 @@ class UpdateSearch(object):
             citation_pipeline_xml.Collection(document.collection_acronym)
         ]
 
-        if hasattr(self, 'external_metadata'):
-            # Pipe para adicionar no <doc> citation dados normalizados do dicionário external_metadata
+        if hasattr(self, 'standardizer'):
+            # Pipe para adicionar no <doc> citation dados normalizados
             ppl_citation_itens.append(
-                citation_pipeline_xml.ExternalMetaData(self.external_metadata, document.collection_acronym))
+                citation_pipeline_xml.ExternalMetaData(self.standardizer, document.collection_acronym))
 
         ppl_citation = plumber.Pipeline(*ppl_citation_itens)
 
@@ -300,9 +269,9 @@ class UpdateSearch(object):
         # Pipeline para adicionar no <doc> do artigo dados das referências citadas
         ppl_citation_fk_itens = [pipeline_xml.SetupDocument()]
 
-        if hasattr(self, 'external_metadata'):
+        if hasattr(self, 'standardizer'):
             # Com metadados externos
-            ppl_citation_fk_itens.append(pipeline_xml.CitationsFKData(self.external_metadata))
+            ppl_citation_fk_itens.append(pipeline_xml.CitationsFKData(self.standardizer))
         else:
             # Sem metadados externos
             ppl_citation_fk_itens.append(pipeline_xml.CitationsFKData())
@@ -567,9 +536,18 @@ def main():
     )
 
     parser.add_argument(
-        '-m', '--external_metadata',
+        '--load_std_cits',
+        default=False,
+        action='store_true',
+        dest='load_std_cits',
+        help='load standardized cited references from a mongo database'
+    )
+
+    parser.add_argument(
+        '--mongo_uri',
         default=None,
-        help='json composed of external citations metadata'
+        dest='mongo_uri_std_cits',
+        help='mongo uri string in the format mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]'
     )
 
     args = parser.parse_args()
@@ -592,7 +570,8 @@ def main():
             differential=args.differential,
             load_indicators=args.load_indicators,
             include_cited_references=args.include_cited_references,
-            external_metadata=args.external_metadata
+            load_standardized_cited_references=args.load_std_cits,
+            mongo_uri_std_cits=args.mongo_uri_std_cits
         )
         us.run()
     except KeyboardInterrupt:
