@@ -1,9 +1,9 @@
 # coding: utf-8
-from lxml import etree as ET
-
 import plumber
-from citedby import client
 
+from citedby import client
+from lxml import etree as ET
+from updatesearch.field_sanitizer import remove_accents, remove_period
 
 CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')
 
@@ -180,10 +180,18 @@ class JournalTitle(plumber.Pipe):
         raw, xml = data
 
         field = ET.Element('field')
-        field.text = raw.journal.title
-        field.set('name', self.field_name)
 
-        xml.find('.').append(field)
+        journal_title = raw.journal.title
+
+        if journal_title:
+            if self.field_name != 'journal_title':
+                field.text = remove_accents(remove_period(journal_title)).lower()
+            else:
+                field.text = raw.journal.title
+
+            field.set('name', self.field_name)
+
+            xml.find('.').append(field)
 
         return data
 
@@ -279,7 +287,6 @@ class Authors(plumber.Pipe):
         raw, xml = data
 
         for author in raw.authors:
-            field = ET.Element('field')
             name = []
 
             if 'surname' in author:
@@ -288,10 +295,19 @@ class Authors(plumber.Pipe):
             if 'given_names' in author:
                 name.append(author['given_names'])
 
-            field.text = ', '.join(name)
+            fullname = ', '.join(name)
 
-            field.set('name', self.field_name)
-            xml.find('.').append(field)
+            if fullname:
+                field = ET.Element('field')
+
+                if self.field_name != 'au':
+                    field.text = remove_accents(remove_period(fullname)).lower()
+                else:
+                    field.text = fullname
+
+                field.set('name', self.field_name)
+
+                xml.find('.').append(field)
 
         return data
 
@@ -588,9 +604,17 @@ class JournalAbbrevTitle(plumber.Pipe):
         raw, xml = data
 
         field = ET.Element('field')
-        field.text = raw.journal.abbreviated_title
-        field.set('name', self.field_name)
-        xml.find('.').append(field)
+
+        jat = raw.journal.abbreviated_title
+        if jat:
+            if self.field_name != 'ta':
+                field.text = remove_accents(remove_period(jat)).lower()
+            else:
+                field.text = jat
+
+            field.set('name', self.field_name)
+
+            xml.find('.').append(field)
 
         return data
 
@@ -836,11 +860,11 @@ class CitationsFKData(plumber.Pipe):
         títulos dos periódicos das referências citadas,
         títulos extras e normalizados dos perídicos das referências citadas.
 
-    :param external_metadata: dados extras e normalizados das citaçoes
+    :param standardizer: dados normalizados das citaçoes em formato de dicionário
     """
 
-    def __init__(self, external_metadata=None):
-        self.external_metadata = external_metadata
+    def __init__(self, standardizer=None):
+        self.standardizer = standardizer
 
     def precond(data):
         raw, xml = data
@@ -866,7 +890,6 @@ class CitationsFKData(plumber.Pipe):
 
                 # Adiciona os autores
                 for author in cit.authors:
-                    field_au = ET.Element('field')
                     name = []
 
                     if 'surname' in author:
@@ -875,33 +898,47 @@ class CitationsFKData(plumber.Pipe):
                     if 'given_names' in author:
                         name.append(author['given_names'])
 
-                    field_au.text = ', '.join(name)
+                    fullname = ', '.join(name)
+                    if fullname:
+                        cleaned_name = remove_accents(remove_period(fullname)).lower()
 
-                    field_au.set('name', 'citation_fk_au')
+                        if cleaned_name:
+                            field_au = ET.Element('field')
+                            field_au.text = cleaned_name
+                            field_au.set('name', 'citation_fk_au')
 
-                    xml.find('.').append(field_au)
+                            xml.find('.').append(field_au)
 
                 if cit.publication_type == 'article':
                     # Adiciona os títulos dos periódicos
                     if cit.source:
-                        field_ta = ET.Element('field')
-                        field_ta.text = cit.source
-                        field_ta.set('name', 'citation_fk_ta')
+                        cleaned_cit_source = remove_accents(remove_period(cit.source)).lower()
+                        if cleaned_cit_source:
+                            field_ta = ET.Element('field')
+                            field_ta.text = cleaned_cit_source
+                            field_ta.set('name', 'citation_fk_ta')
 
-                        xml.find('.').append(field_ta)
+                            xml.find('.').append(field_ta)
 
-                    # Adiciona os títulos extras e normalizados dos periódicos
-                    if self.external_metadata:
-                        citation = self.external_metadata.get(cit_full_id)
-                        if citation:
-                            citation_type = citation.get('type')
-                            if citation_type == 'journal-article':
-                                for ct in citation.get('container-title', []):
-                                    field_ta_normalized = ET.Element('field')
-                                    field_ta_normalized.text = ct
-                                    field_ta_normalized.set('name', 'citation_fk_ta')
+                    # Adiciona os títulos oficiais dos periódicos
+                    if self.standardizer:
+                        cit_std_data = self.standardizer.find_one({'_id': cit_full_id})
+                        if cit_std_data:
+                            official_journal_title = cit_std_data.get('official-journal-title', [])
+                            for ojt in official_journal_title:
+                                field_ta_normalized = ET.Element('field')
+                                field_ta_normalized.text = ojt.lower()
+                                field_ta_normalized.set('name', 'citation_fk_ta')
 
-                                    xml.find('.').append(field_ta_normalized)
+                                xml.find('.').append(field_ta_normalized)
+
+                            official_abbreviated_journal_title = cit_std_data.get('official-abbreviated-journal-title', [])
+                            for oajt in official_abbreviated_journal_title:
+                                field_ta_normalized = ET.Element('field')
+                                field_ta_normalized.text = oajt.lower()
+                                field_ta_normalized.set('name', 'citation_fk_ta')
+
+                                xml.find('.').append(field_ta_normalized)
 
         return data
 
