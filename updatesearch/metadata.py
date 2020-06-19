@@ -90,8 +90,10 @@ class UpdateSearch(object):
         self.load_indicators = load_indicators
         self.issn = issn
         self.solr = Solr(SOLR_URL, timeout=10)
+
         if period:
             self.from_date = datetime.now() - timedelta(days=period)
+
         self.include_cited_references = include_cited_references
 
         if load_standardized_cited_references and mongo_uri_std_cits:
@@ -217,7 +219,6 @@ class UpdateSearch(object):
             pipeline_xml.SetupDocument(),
             pipeline_xml.Entity(name='citation'),
             citation_pipeline_xml.DocumentID(document.collection_acronym),
-            citation_pipeline_xml.IndexNumber(),
             pipeline_xml.DOI(),
             citation_pipeline_xml.PublicationType(),
             citation_pipeline_xml.Authors(),
@@ -549,6 +550,7 @@ def main():
         dest='mongo_uri_std_cits',
         help='mongo uri string in the format mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]'
     )
+
 
     args = parser.parse_args()
     LOGGING['handlers']['console']['level'] = args.logging_level

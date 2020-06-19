@@ -269,20 +269,6 @@ class ExternalMetaData(plumber.Pipe):
         return data
 
 
-class IndexNumber(plumber.Pipe):
-
-    def transform(self, data):
-        raw, xml = data
-
-        field = ET.Element('field')
-        field.text = str(raw.index_number)
-        field.set('name', 'cit_index_number')
-
-        xml.find('.').append(field)
-
-        return data
-
-
 class Institutions(plumber.Pipe):
 
     def precond(data):
