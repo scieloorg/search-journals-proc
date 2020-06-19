@@ -13,7 +13,8 @@ install_requires = [
     'langcodes==1.4.1',
     'solrapi>=1.2.0',
     'certifi',
-    'mongomock'
+    'mongomock',
+    'pymongo'
 ]
 
 tests_require = []
