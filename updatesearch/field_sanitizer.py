@@ -1,4 +1,6 @@
 # coding=utf-8
+import unicodedata
+
 from datetime import datetime
 
 
@@ -23,46 +25,61 @@ INVALID_CHARS = {u'@', u'≈', u'≠', u'‼', u'∗', u'¾', u'²', u'}', u'=',
                  u'¿', u'«', u'»', u'*', u'/', u'\\', u'&', u'%', u'‖', u'§', u'®', u'¹', u'½'}
 
 
-class FieldSanitizer(object):
+def get_date_quality(date):
+    """ Identify the consistence (quality) of a date according to the following rules:
 
-    @staticmethod
-    def get_date_quality(date):
-        """ Identify the consistence (quality) of a date according to the following rules:
+    (a) If date has no chars, the method returns DATE_ERROR_LEVEL_EMPTY
+    (b) If date has less than four digits, the method returns DATE_ERROR_LEVEL_SIZE
+    (c) If date is composed of chars others than digits, the method returns DATE_ERROR_LEVEL_CHAR
+    (d) If date represents an year less than 1000 or greater than the current year,  the method returns
+    DATE_ERROR_LEVEL_VALUE.
 
-        (a) If date has no chars, the method returns DATE_ERROR_LEVEL_EMPTY
-        (b) If date has less than four digits, the method returns DATE_ERROR_LEVEL_SIZE
-        (c) If date is composed of chars others than digits, the method returns DATE_ERROR_LEVEL_CHAR
-        (d) If date represents an year less than 1000 or greater than the current year,  the method returns
-        DATE_ERROR_LEVEL_VALUE.
+    We are supposing that a citation whose year of publication date is less than 1000, is probably a citation with
+    an invalid publication date.
 
-        We are supposing that a citation whose year of publication date is less than 1000, is probably a citation with
-        an invalid publication date.
+    :param date: date (YYYY-MM-DD)
+    :return: an int representing the consistency (quality) of the date
+    """
+    if not date:
+        return DATE_ERROR_LEVEL_EMPTY
 
-        :param date: date (YYYY-MM-DD)
-        :return: an int representing the consistency (quality) of the date
-        """
-        if not date:
-            return DATE_ERROR_LEVEL_EMPTY
+    # Get the first four elements of the date
+    if len(date) > 4:
+        date = date[:4]
 
-        # Get the first four elements of the date
-        if len(date) > 4:
-            date = date[:4]
+    if len(date) < 4:
+        return DATE_ERROR_LEVEL_SIZE
+    elif not date.isdigit():
+        return DATE_ERROR_LEVEL_CHAR
+    elif int(date) < 1000 or int(date) > datetime.now().year:
+        return DATE_ERROR_LEVEL_VALUE
 
-        if len(date) < 4:
-            return DATE_ERROR_LEVEL_SIZE
-        elif not date.isdigit():
-            return DATE_ERROR_LEVEL_CHAR
-        elif int(date) < 1000 or int(date) > datetime.now().year:
-            return DATE_ERROR_LEVEL_VALUE
+def get_author_name_quality(text):
+    for c in text:
+        if c in INVALID_CHARS:
+            return AUTHOR_ERROR_LEVEL_CHAR
 
-    @staticmethod
-    def get_author_name_quality(text):
-        for c in text:
-            if c in INVALID_CHARS:
-                return AUTHOR_ERROR_LEVEL_CHAR
-
-    @staticmethod
-    def remove_period(text):
+def remove_period(text):
+    if not text:
+        return ''
+    else:
         while text.endswith('.'):
             text = text[:-1]
         return text
+
+def remove_accents(text):
+    if not text:
+        return ''
+    else:
+        cleaned_text = unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore').decode('ASCII')
+        if cleaned_text:
+            return cleaned_text
+        else:
+            return ''
+
+def keep_alpha_digit(text):
+    cleaned_text = []
+    for i in remove_accents(text):
+        if i.isalpha() and not i.isdigit():
+            cleaned_text.append(i)
+    return ''.join(cleaned_text).lower()
