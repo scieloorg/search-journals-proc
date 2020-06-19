@@ -1,13 +1,13 @@
 # coding: utf-8
+import json
+import mongomock
+import os
 import unittest
 
 from lxml import etree as ET
-import json
-import os
-
+from updatesearch import citation_pipeline_xml
 from xylose.scielodocument import Article, Citation
 
-from updatesearch import citation_pipeline_xml
 
 class ExportTests(unittest.TestCase):
 
@@ -155,63 +155,59 @@ class ExportTests(unittest.TestCase):
 
         pxml = ET.Element('doc')
 
-        fake_xylose_citation = Citation({'v880': [{'_': 'S0034-8910201000040000700002'}], 'v701': [{'_': '2'}]})
+        fake_xylose_citation = Citation({'v880': [{'_': 'S1852-4222201900010000200026'}], 'v701': [{'_': '2'}]})
         data = [fake_xylose_citation, pxml]
 
-        fake_external_metadata = {
-            u'S0034-8910201000040000700002-scl': {
-                'type': u'journal-article',
-                'container-title': [u'Brazilian Journal of Nephrology'],
-                'ISSN': [u'0101-2800'],
-                'BC1-ISSNS': [u'0101-2800', u'2175-8239'],
-                'BC1-JOURNAL-TITLES': [
-                    u'BRAZILIAN JOURNAL OF NEPHROLOGY',
-                    u'J BRAS NEFROL',
-                    u'JORNAL BRASILEIRO DE NEFROLOGIA',
-                    u'BRAZ J NEPHROL ONLINE',
-                    u'BRAZ J NEPHROL',
-                    u'BRAZ J NEPHROL IMPR'
-                ],
-                'normalization-status': u'4',
-            }
-        }
+        mock_standardizer = mongomock.MongoClient()['citations']['standardized']
 
-        xml_citation = citation_pipeline_xml.ExternalMetaData(fake_external_metadata, 
+        fake_external_metadata = {'_id': 'S1852-4222201900010000200026-scl',
+                                  'alternative-journal-titles': ['REVISTA INTEGRA EDUCATIVA',
+                                                                 'INTEGRA EDUCATIVA IMPRESA',
+                                                                 'INTEGRA EDUC EN LINEA',
+                                                                 'INTEGRA EDUC IMPR',
+                                                                 'REV DE INV EDUC',
+                                                                 'INTEGRA EDUCATIVA EN LINEA',
+                                                                 'INTEGRA EDUC',
+                                                                 'INTEGRA EDUCATIVA'],
+                                  'cited-journal-title': 'INTEGRA EDUCATIVA',
+                                  'crossref': {},
+                                  'issn': ['1999-5024', '1997-4043'],
+                                  'issn-l': '1997-4043',
+                                  'official-abbreviated-journal-title': ['INTEGRA EDUC'],
+                                  'official-journal-title': ['INTEGRA EDUCATIVA'],
+                                  'pid': '',
+                                  'status': 1,
+                                  'update-date': '2020-05-30'
+                                  }
+        mock_standardizer.insert_one(fake_external_metadata)
+
+        xml_citation = citation_pipeline_xml.ExternalMetaData(mock_standardizer,
                                                                       self._article_meta.collection_acronym)
         raw, xml = xml_citation.transform(data)
 
-        obtained_title_canonical = xml.find('./field[@name="cit_journal_title_canonical"]').text
-        self.assertEqual(obtained_title_canonical, 'Brazilian Journal of Nephrology')
+        obtained_official_journal_title = '; '.join([i.text for i in xml.findall('./field[@name="cit_official_journal_title"]')])
+        self.assertEqual(obtained_official_journal_title, 'INTEGRA EDUCATIVA'.lower())
 
-        obtained_issn_canonical = \
-            '; '.join([ac.text for ac in xml.findall('./field[@name="cit_journal_issn_canonical"]')])
-        self.assertEqual(obtained_issn_canonical, '0101-2800')
+        obtained_official_abbrev_journal_title = '; '.join([i.text for i in xml.findall('./field[@name="cit_official_abbreviated_journal_title"]')])
+        self.assertEqual(obtained_official_abbrev_journal_title, 'INTEGRA EDUC'.lower())
 
-        obtained_title_normalized = \
-            '; '.join([ac.text for ac in xml.findall('./field[@name="cit_journal_title_normalized"]')])
-        self.assertEqual(obtained_title_normalized, 'BRAZILIAN JOURNAL OF NEPHROLOGY; J BRAS NEFROL;'
-                                                    ' JORNAL BRASILEIRO DE NEFROLOGIA; BRAZ J NEPHROL ONLINE;'
-                                                    ' BRAZ J NEPHROL; BRAZ J NEPHROL IMPR')
+        obtained_alternative_journal_title = '; '.join([i.text for i in xml.findall('./field[@name="cit_alternative_journal_title"]')])
+        self.assertEqual(obtained_alternative_journal_title, '; '.join(['REVISTA INTEGRA EDUCATIVA',
+                                                                       'INTEGRA EDUCATIVA IMPRESA',
+                                                                       'INTEGRA EDUC EN LINEA',
+                                                                       'INTEGRA EDUC IMPR',
+                                                                       'REV DE INV EDUC',
+                                                                       'INTEGRA EDUCATIVA EN LINEA',
+                                                                       'INTEGRA EDUC',
+                                                                       'INTEGRA EDUCATIVA']).lower())
 
-        obtained_issn_normalized = \
-            '; '.join([ac.text for ac in xml.findall('./field[@name="cit_journal_issn_normalized"]')])
-        self.assertEqual(obtained_issn_normalized, '0101-2800; 2175-8239')
+        obtained_issn_journal_title = '; '.join([i.text for i in xml.findall('./field[@name="cit_official_journal_issn"]')])
+        self.assertEqual(obtained_issn_journal_title, '; '.join(['1999-5024', '1997-4043']))
 
-        self.assertEqual(xml.find('./field[@name="cit_normalization_status"]').text, '4')
+        self.assertEqual(xml.find('./field[@name="cit_official_journal_issn_l"]').text, '1997-4043')
 
-    def test_xml_citation_index_number_pipe(self):
+        self.assertEqual(xml.find('./field[@name="cit_normalization_status"]').text, '1')
 
-        pxml = ET.Element('doc')
-
-        fake_xylose_citation = Citation({'v880': [{'_': 'S0034-8910201000040000700002'}], 'v701': [{'_': '2'}]})
-        data = [fake_xylose_citation, pxml]
-
-        xml_citation = citation_pipeline_xml.IndexNumber()
-        raw, xml = xml_citation.transform(data)
-
-        result = xml.find('./field[@name="cit_index_number"]').text
-
-        self.assertEqual(u'2', result)
 
     def test_xml_citation_institutions_pipe(self):
 
