@@ -42,7 +42,8 @@ Veja a lista de parâmetros presente nos scripts:
          [-h] [-x] [-p PERIOD] [-f [FROM_DATE]] [-n] [-u [UNTIL_DATE]]
          [-c COLLECTION] [-i ISSN] [-d]
          [--logging_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-
+         [--include_cited_references] [--load_std_cits]
+         [--mongo_uri MONGO_URI_STD_CITS]
   optional arguments:
     -h, --help            show this help message and exit
     -x, --differential    Update and Remove records according to a comparison
@@ -70,6 +71,14 @@ Veja a lista de parâmetros presente nos scripts:
     -d, --delete          delete query ex.: q=*:* (Lucene Syntax).
     --logging_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}, -l {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                           Logggin level
+    --include_cited_references, -r
+                          include cited references in the indexing process
+    --load_std_cits       load standardized cited references from a mongo
+                          database
+    --mongo_uri MONGO_URI_STD_CITS
+                          mongo uri string in the format mongodb://[username:pas
+                          sword@]host1[:port1][,...hostN[:portN]][/[defaultauthd
+                          b][?options]]
 
 ``update_search_preprint --help``
 

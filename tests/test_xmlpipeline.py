@@ -986,3 +986,102 @@ class ExportTests(unittest.TestCase):
             self.assertTrue(True)
         else:
             self.assertTrue(False)
+            
+    def test_xml_entity(self):
+        pxml = ET.Element('doc')
+
+        data = [self._article_meta, pxml]
+
+        xmlarticle = pipeline_xml.Entity()
+        raw, xml = xmlarticle.transform(data)
+
+        result = xml.find('./field[@name="entity"]').text
+        self.assertEqual('document', result)
+
+    def test_xml_entity_without_pipe(self):
+        fakexylosearticle = Article({'article': {}, 'title': {}})
+
+        pxml = ET.Element('doc')
+
+        data = [fakexylosearticle, pxml]
+
+        xmlarticle = pipeline_xml.Entity()
+
+        raw, xml = xmlarticle.transform(data)
+
+        self.assertIsNone(xml.find('./field[name="start_page"]'))
+
+    def test_xml_citations_fk_data(self):
+
+        pxml = ET.Element('doc')
+
+        data = [self._article_meta, pxml]
+
+        xmlarticle = pipeline_xml.CitationsFKData({})
+        raw, xml = xmlarticle.transform(data)
+
+        expected_cit_fk_results = [b'S0034-8910201000040000700001-scl', b'S0034-8910201000040000700002-scl',
+                                   b'S0034-8910201000040000700003-scl', b'S0034-8910201000040000700004-scl',
+                                   b'S0034-8910201000040000700005-scl', b'S0034-8910201000040000700006-scl',
+                                   b'S0034-8910201000040000700007-scl', b'S0034-8910201000040000700008-scl',
+                                   b'S0034-8910201000040000700009-scl', b'S0034-8910201000040000700010-scl',
+                                   b'S0034-8910201000040000700011-scl', b'S0034-8910201000040000700012-scl',
+                                   b'S0034-8910201000040000700013-scl', b'S0034-8910201000040000700014-scl',
+                                   b'S0034-8910201000040000700015-scl', b'S0034-8910201000040000700016-scl',
+                                   b'S0034-8910201000040000700017-scl', b'S0034-8910201000040000700018-scl',
+                                   b'S0034-8910201000040000700019-scl', b'S0034-8910201000040000700020-scl',
+                                   b'S0034-8910201000040000700021-scl', b'S0034-8910201000040000700022-scl',
+                                   b'S0034-8910201000040000700023-scl']
+
+        expected_cit_fk_au_results = [b'bamgboye, el', b'bastos, mg', b'carmo, wb', b'abrita, rr', b'almeida, ec',
+                                      b'mafra, d', b'costa, dmn', b'bello, ak', b'nwankwo, e', b'el nahas, am', b'bommer, j',
+                                      b'cherchiglia, ml', b'guerra jr, aa', b'andrade, eig', b'machado, cj',
+                                      b'acurcio, fa', b'meira jr, w', b'cusumano, a', b'garcia-garcia, g',
+                                      b'di gioia, c', b'hermida, o', b'lavorato, c', b'carreno, ca', b'grassmann, a',
+                                      b'gioberge, s', b'moeller, s', b'brown, g', b'inrig, jk', b'sun, jl', b'yang, q',
+                                      b'briley, lp', b'szczech, la', b'jaar, bg', b'coresh, j', b'plantinga, lc', b'fink, ne',
+                                      b'klag, mj', b'levey, as', b'mazzuchi, n', b'fernandez-cean, jm', b'carbonell, e',
+                                      b'moura, l', b'schmidt, mi', b'duncan, bb', b'rosa, rs', b'malta, dc', b'stevens, a',
+                                      b'oliveira, mb', b'romao jr, je', b'zatz, r', b'oniscu, gc', b'schalkwijk, aa',
+                                      b'johnson, rj', b'brown, h', b'forsythe, jl', b'pisoni, rl', b'young, ew',
+                                      b'dykstra, dm', b'greenwood, rn', b'hecking, e', b'gillespie, b', b'queiroz, ov',
+                                      b'guerra jr, aa', b'machado, cj', b'andrade, eig', b'meira jr, w',
+                                      b'acurcio, fa', b'cg, rabbat', b'ke, thorpe', b'jd, russell', b'dn, churchill',
+                                      b'ravanan, r', b'udayaraj, u', b'bakran, a', b'steenkamp, r', b'williams, aj',
+                                      b'ansell, d', b'sesso, r', b'lopes, aa', b'thome, fs', b'bevilacqua j, l',
+                                      b'romao, jej', b'lugon, j', b'stack, ag', b'stengel, b', b'billon, s',
+                                      b'van dijk, pc', b'jager, kj', b'dekker, fw', b'simpson, k', b'travassos, c',
+                                      b'oliveira, exg', b'viacava, f', b'vonesh, ef', b'snyder, jj', b'foley, rn',
+                                      b'collins, aj']
+
+        expected_cit_fk_ta_results = [b'ethn dis', b'j bras nefrol', b'kidney int suppl', b'nephrol dial transplant',
+                                      b'rev bras estud pop', b'ren fail', b'nephrol dial transplant',
+                                      b'clin j am soc nephrol', b'ann intern med', b'kidney int suppl',
+                                      b'epidemiol serv saude', b'kidney int suppl', b'bmj', b'kidney int',
+                                      b'epidemiol serv saude', b'j am soc nephrol', b'nephrol dial transplant',
+                                      b'j bras nefrol', b'j am soc nephrol', b'nephrol dial transplant',
+                                      b'cienc saude coletiva', b'kidney int suppl']
+
+        obtained_cit_fk_results = [x.text.encode('utf-8') for x in xml.findall('./field[@name="citation_fk"]')]
+        obtained_cit_fk_au_results = [x.text.encode('utf-8') for x in xml.findall('./field[@name="citation_fk_au"]')]
+        obtained_cit_fk_ta_results = [x.text.encode('utf-8') for x in xml.findall('./field[@name="citation_fk_ta"]')]
+
+        self.assertListEqual(obtained_cit_fk_results, expected_cit_fk_results)
+        self.assertListEqual(obtained_cit_fk_au_results, expected_cit_fk_au_results)
+        self.assertListEqual(obtained_cit_fk_ta_results, expected_cit_fk_ta_results)
+
+    def test_xml_citations_fk_data_without_data_pipe(self):
+
+        fakexylosearticle = Article({'article': {}, 'title': {}})
+
+        pxml = ET.Element('doc')
+
+        data = [fakexylosearticle, pxml]
+
+        xmlarticle = pipeline_xml.CitationsFKData({})
+
+        raw, xml = xmlarticle.transform(data)
+
+        self.assertIsNone(xml.find('./field[name="citation_fk"]'))
+        self.assertIsNone(xml.find('./field[name="citation_fk_au"]'))
+        self.assertIsNone(xml.find('./field[name="citation_fk_ta"]'))

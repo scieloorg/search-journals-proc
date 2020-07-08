@@ -1,9 +1,9 @@
 # coding: utf-8
-from lxml import etree as ET
-
 import plumber
-from citedby import client
 
+from citedby import client
+from lxml import etree as ET
+from updatesearch.field_sanitizer import remove_accents, remove_period
 
 CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')
 
@@ -49,6 +49,11 @@ CITABLE_DOCUMENT_TYPES = (
     u'rapid-communication',
     u'research-article',
     u'review-article'
+)
+
+CITATION_ALLOWED_TYPES = (
+    u'article',
+    u'book'
 )
 
 
@@ -168,28 +173,25 @@ class DocumentID(plumber.Pipe):
 
 class JournalTitle(plumber.Pipe):
 
-    def transform(self, data):
-        raw, xml = data
-
-        field = ET.Element('field')
-        field.text = raw.journal.title
-        field.set('name', 'journal_title')
-
-        xml.find('.').append(field)
-
-        return data
-
-
-class JournalTitle(plumber.Pipe):
+    def __init__(self, field_name='journal_title'):
+        self.field_name = field_name
 
     def transform(self, data):
         raw, xml = data
 
         field = ET.Element('field')
-        field.text = raw.journal.title
-        field.set('name', 'journal_title')
 
-        xml.find('.').append(field)
+        journal_title = raw.journal.title
+
+        if journal_title:
+            if self.field_name != 'journal_title':
+                field.text = remove_accents(remove_period(journal_title)).lower()
+            else:
+                field.text = raw.journal.title
+
+            field.set('name', self.field_name)
+
+            xml.find('.').append(field)
 
         return data
 
@@ -270,6 +272,9 @@ class URL(plumber.Pipe):
 
 class Authors(plumber.Pipe):
 
+    def __init__(self, field_name='au'):
+        self.field_name = field_name
+
     def precond(data):
 
         raw, xml = data
@@ -282,7 +287,6 @@ class Authors(plumber.Pipe):
         raw, xml = data
 
         for author in raw.authors:
-            field = ET.Element('field')
             name = []
 
             if 'surname' in author:
@@ -291,10 +295,19 @@ class Authors(plumber.Pipe):
             if 'given_names' in author:
                 name.append(author['given_names'])
 
-            field.text = ', '.join(name)
+            fullname = ', '.join(name)
 
-            field.set('name', 'au')
-            xml.find('.').append(field)
+            if fullname:
+                field = ET.Element('field')
+
+                if self.field_name != 'au':
+                    field.text = remove_accents(remove_period(fullname)).lower()
+                else:
+                    field.text = fullname
+
+                field.set('name', self.field_name)
+
+                xml.find('.').append(field)
 
         return data
 
@@ -584,13 +597,24 @@ class EndPage(plumber.Pipe):
 
 class JournalAbbrevTitle(plumber.Pipe):
 
+    def __init__(self, field_name='ta'):
+        self.field_name = field_name
+
     def transform(self, data):
         raw, xml = data
 
         field = ET.Element('field')
-        field.text = raw.journal.abbreviated_title
-        field.set('name', 'ta')
-        xml.find('.').append(field)
+
+        jat = raw.journal.abbreviated_title
+        if jat:
+            if self.field_name != 'ta':
+                field.text = remove_accents(remove_period(jat)).lower()
+            else:
+                field.text = jat
+
+            field.set('name', self.field_name)
+
+            xml.find('.').append(field)
 
         return data
 
@@ -824,6 +848,114 @@ class Sponsor(plumber.Pipe):
             field.text = sponsor
             field.set('name', 'sponsor')
             xml.find('.').append(field)
+
+        return data
+
+
+class CitationsFKData(plumber.Pipe):
+    """
+    Adiciona
+        ids das referências citadas,
+        autores das referências citadas,
+        títulos dos periódicos das referências citadas,
+        títulos extras e normalizados dos perídicos das referências citadas.
+
+    :param standardizer: dados normalizados das citaçoes em formato de dicionário
+    """
+
+    def __init__(self, standardizer=None):
+        self.standardizer = standardizer
+
+    def precond(data):
+        raw, xml = data
+        if not raw.citations:
+            raise plumber.UnmetPrecondition()
+
+    @plumber.precondition(precond)
+    def transform(self, data):
+        raw, xml = data
+
+        for cit in raw.citations:
+            if cit.publication_type in CITATION_ALLOWED_TYPES:
+
+                cit_id = cit.data['v880'][0]['_']
+                cit_full_id = '{0}-{1}'.format(cit_id, raw.collection_acronym)
+
+                # Adiciona os ids
+                field_id = ET.Element('field')
+                field_id.text = cit_full_id
+                field_id.set('name', 'citation_fk')
+
+                xml.find('.').append(field_id)
+
+                # Adiciona os autores
+                for author in cit.authors:
+                    name = []
+
+                    if 'surname' in author:
+                        name.append(author['surname'])
+
+                    if 'given_names' in author:
+                        name.append(author['given_names'])
+
+                    fullname = ', '.join(name)
+                    if fullname:
+                        cleaned_name = remove_accents(remove_period(fullname)).lower()
+
+                        if cleaned_name:
+                            field_au = ET.Element('field')
+                            field_au.text = cleaned_name
+                            field_au.set('name', 'citation_fk_au')
+
+                            xml.find('.').append(field_au)
+
+                if cit.publication_type == 'article':
+                    # Adiciona os títulos dos periódicos
+                    if cit.source:
+                        cleaned_cit_source = remove_accents(remove_period(cit.source)).lower()
+                        if cleaned_cit_source:
+                            field_ta = ET.Element('field')
+                            field_ta.text = cleaned_cit_source
+                            field_ta.set('name', 'citation_fk_ta')
+
+                            xml.find('.').append(field_ta)
+
+                    # Adiciona os títulos oficiais dos periódicos
+                    if self.standardizer:
+                        cit_std_data = self.standardizer.find_one({'_id': cit_full_id})
+                        if cit_std_data:
+                            official_journal_title = cit_std_data.get('official-journal-title', [])
+                            for ojt in official_journal_title:
+                                field_ta_normalized = ET.Element('field')
+                                field_ta_normalized.text = ojt.lower()
+                                field_ta_normalized.set('name', 'citation_fk_ta')
+
+                                xml.find('.').append(field_ta_normalized)
+
+                            official_abbreviated_journal_title = cit_std_data.get('official-abbreviated-journal-title', [])
+                            for oajt in official_abbreviated_journal_title:
+                                field_ta_normalized = ET.Element('field')
+                                field_ta_normalized.text = oajt.lower()
+                                field_ta_normalized.set('name', 'citation_fk_ta')
+
+                                xml.find('.').append(field_ta_normalized)
+
+        return data
+
+
+class Entity(plumber.Pipe):
+
+    def __init__(self, name='document'):
+        self.name = name
+
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = self.name
+        field.set('name', 'entity')
+
+        xml.find('.').append(field)
 
         return data
 

@@ -12,7 +12,9 @@ install_requires = [
     'Sickle==0.6.5',
     'langcodes==1.4.1',
     'solrapi>=1.2.0',
-    'certifi'
+    'certifi',
+    'mongomock',
+    'pymongo'
 ]
 
 tests_require = []
