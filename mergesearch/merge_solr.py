@@ -161,3 +161,80 @@ class MergeSolr(object):
         if self.persist_on_solr:
             self.solr.update(str(data).encode('utf-8'), headers={'content-type': 'application/json'})
 
+    def merge_citations(self, deduplicated_citations):
+        """
+        Mescla documentos Solr. Persiste no próprio Solr ou em disco (para posterior persistência).
+
+        :param deduplicated_citations: Códigos hashes contendo ids de citações a serem mescladas
+        """
+        logging.info('Merging cited references (Solr documents)...')
+
+        cits_for_merging = []
+        docs_for_updating = []
+        cits_for_removing = set()
+
+        total_citations = len(deduplicated_citations)
+        for counter, dc in enumerate(deduplicated_citations):
+            logging.info('%d of %d' % (counter, total_citations))
+
+            cit_full_ids = dc['cit_full_ids']
+            citing_docs = dc['citing_docs']
+
+            response_citations = self.request_docs(cit_full_ids)
+
+            # Mescla citações
+            if len(response_citations.get('response', {}).get('docs')) > 1:
+                citations = response_citations['response']['docs']
+
+                merged_citation = {}
+                merged_citation.update(citations[0])
+
+                if self.cit_hash_base == 'articles_start_page':
+                    merged_citation['start_page'] = dc['cit_start_page']
+                elif self.cit_hash_base == 'articles_volume':
+                    merged_citation['volume'] = dc['cit_volume']
+                elif self.cit_hash_base == 'articles_issue':
+                    merged_citation['issue'] = dc['cit_issue']
+
+                ids_for_removing = self.merge_citation(merged_citation, citations[1:])
+                cits_for_merging.append(merged_citation)
+
+                response_documents = self.request_docs(citing_docs)
+
+                # Atualiza documentos citantes
+                for doc in response_documents.get('response', {}).get('docs', []):
+                    updated_doc = {}
+                    updated_doc['entity'] = 'document'
+                    updated_doc['id'] = doc['id']
+                    updated_doc['citation_fk'] = {'remove': list(ids_for_removing), 'add': merged_citation['id']}
+
+                    docs_for_updating.append(updated_doc)
+
+                # Monta instruções de remoção de citações mescladas
+                cits_for_removing = cits_for_removing.union(ids_for_removing)
+
+            # Persiste a cada 50000 comandos de mesclagem
+            if len(cits_for_merging) >= 50000:
+                self.persist(cits_for_merging, '0_cits_for_merging')
+                cits_for_merging = []
+
+                self.persist(docs_for_updating, '1_docs_for_updating')
+                docs_for_updating = []
+
+                rm_commands = self.mount_removing_commands(cits_for_removing)
+                for counter, rm in enumerate(rm_commands):
+                    self.persist(rm, '2_cits_for_removing' + '_' + str(counter))
+                cits_for_removing = set()
+
+        if len(cits_for_merging) > 0 or len(docs_for_updating) or len(cits_for_removing) > 0:
+            self.persist(cits_for_merging, '0_cits_for_merging')
+            self.persist(docs_for_updating, '1_docs_for_updating')
+
+            rm_commands = self.mount_removing_commands(cits_for_removing)
+            for counter, rm in enumerate(rm_commands):
+                self.persist(rm, '2_cits_for_removing' + '_' + str(counter))
+
+        if self.persist_on_solr:
+            self.solr.commit()
+
+
