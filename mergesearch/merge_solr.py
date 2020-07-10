@@ -73,6 +73,51 @@ class MergeSolr(object):
         logging.info('There are %d cited references identifiers to be merged.' % len(ids_for_merging))
 
         return ids_for_merging
+
+    def merge_citation(self, primary_citation, others):
+        """
+        Mescla dados de uma citação principal com dados de outras citações.
+
+        :param primary_citation: Citação principal
+        :param others: Outras citações similares à principal
+        :return: Identificadores Solr a serem removidos
+        """
+
+        ids_for_removing = set()
+
+        for cit in others[1:]:
+            raw_cit = cit.copy()
+
+            # Mescla informação de documentos citantes
+            primary_citation['document_fk'].extend(raw_cit['document_fk'])
+            primary_citation['document_fk'] = list(set(primary_citation['document_fk']))
+
+            # Mescla informação de coleções citantes
+            primary_citation['in'].extend(raw_cit['in'])
+            primary_citation['in'] = list(set(primary_citation['in']))
+
+            # Mescla informação de autores citantes
+            if 'document_fk_au' in raw_cit:
+                if 'document_fk_au' not in primary_citation:
+                    primary_citation['document_fk_au'] = []
+                primary_citation['document_fk_au'].extend(raw_cit['document_fk_au'])
+                primary_citation['document_fk_au'] = list(set(primary_citation['document_fk_au']))
+
+            # Mescla informação de periódicos citantes
+            if 'document_fk_ta' in raw_cit:
+                if 'document_fk_ta' not in primary_citation:
+                    primary_citation['document_fk_ta'] = []
+                primary_citation['document_fk_ta'].extend(raw_cit['document_fk_ta'])
+                primary_citation['document_fk_ta'] = list(set(primary_citation['document_fk_ta']))
+
+            # Obtém ids das citações que devem ser removidas dos documentos citantes e do Solr
+            ids_for_removing.add(raw_cit['id'])
+
+        # Calcula número de citações recebidas
+        primary_citation['total_received'] = str(len(primary_citation['document_fk']))
+
+        return ids_for_removing
+
     def request_docs(self, ids):
         """
         Obtém documentos Solr.
