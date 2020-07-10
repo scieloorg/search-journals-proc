@@ -233,3 +233,30 @@ def extract_citations_ids_keys(document: Article, standardizer):
                                                    'chapter'))
 
     return citations_ids_keys
+
+
+def convert_to_mongodoc(data):
+    """
+    Converte dados de citação para registro em formato Mongo.
+
+    :param data: Dados a serem convertidos (lista de quadras no formato: id de citacao, dados de citação, hash, base)
+    :return: Dados convertidos
+    """
+    mgdocs = {'article_issue': {}, 'article_start_page': {}, 'article_volume': {}, 'book': {}, 'chapter': {}}
+
+    for doc_id, citations_data in [d for d in data if d]:
+        for cit in citations_data:
+            cit_full_id = cit[0]
+            cit_keys = cit[1]
+            cit_sha3_256 = cit[2]
+            cit_hash_mode = cit[3]
+
+            if cit_sha3_256 not in mgdocs[cit_hash_mode]:
+                mgdocs[cit_hash_mode][cit_sha3_256] = {'cit_full_ids': [], 'citing_docs': [], 'cit_keys': cit_keys}
+
+            mgdocs[cit_hash_mode][cit_sha3_256]['cit_full_ids'].append(cit_full_id)
+            mgdocs[cit_hash_mode][cit_sha3_256]['citing_docs'].append(doc_id)
+            mgdocs[cit_hash_mode][cit_sha3_256]['update_date'] = datetime.now().strftime('%Y-%m-%d')
+
+    return mgdocs
+
