@@ -149,6 +149,25 @@ class MergeSolr(object):
 
         return response
 
+    def mount_removing_commands(self, cits_for_removing):
+        """
+        Cria comandos para remoção de documentos Solr.
+
+        :param cits_for_removing: Identificadores de documentos a serem removidos
+        :return: Códigos Solr para remoção de documentos
+        """
+        rm_commands = []
+        ids = list(cits_for_removing)
+
+        for start_pos in range(0, len(ids), 1000):
+            last_pos = start_pos + 1000
+            if last_pos > len(ids):
+                last_pos = len(ids)
+
+            command = {'delete': {'query': 'id:(' + ' OR '.join([ids[k] for k in range(start_pos, last_pos)]) + ')'}}
+            rm_commands.append(command)
+        return rm_commands
+
     def persist(self, data, data_name):
         """
         Persiste data no disco e no Solr, se indicado.
