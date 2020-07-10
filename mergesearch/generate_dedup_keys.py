@@ -104,3 +104,17 @@ def _extract_citation_authors(citation: Citation):
 
     return data
 
+
+
+def mount_citation_id(citation: Citation, collection_acronym):
+    """
+    Monta o id completo de uma citação.
+
+    :param citation: Citação da qual o id completo sera montado
+    :param collection_acronym: Acrônimo da coleção SciELO na qual a citação foi referida
+    :return: ID completo da citação formada pelo PID do documento citante, numero da citação e coleção citante
+    """
+    cit_id = citation.data['v880'][0]['_']
+    cit_full_id = '{0}-{1}'.format(cit_id, collection_acronym)
+    return cit_full_id
+
