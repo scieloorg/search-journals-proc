@@ -74,3 +74,33 @@ def _extract_citation_fields_by_list(citation: Citation, fields):
             data['cleaned_' + f] = cleaned_v
 
     return data
+
+
+def _extract_citation_authors(citation: Citation):
+    """
+    Extrai o primeiro autor de uma citação.
+    Caso citação seja capitulo de livro, extrai o primeiro autor do livro e o primeiro autor do capitulo.
+    Caso citação seja livro ou artigo, extrai o primeiro autor.
+
+    :param citation: Citação da qual o primeiro autor sera extraido
+    :return: Dicionário composto pelos pares cleaned_first_author: valor e cleaned_chapter_first_author: valor
+    """
+    data = {}
+
+    if citation.publication_type == 'article' or not citation.chapter_title:
+        cleaned_first_author = get_cleaned_first_author_name(citation.first_author)
+        if cleaned_first_author:
+            data['cleaned_first_author'] = cleaned_first_author
+    else:
+        if citation.analytic_authors:
+            cleaned_chapter_first_author = get_cleaned_first_author_name(citation.analytic_authors[0])
+            if cleaned_chapter_first_author:
+                data['cleaned_chapter_first_author'] = cleaned_chapter_first_author
+
+            if citation.monographic_authors:
+                cleaned_first_author = get_cleaned_first_author_name(citation.monographic_authors[0])
+                if cleaned_first_author:
+                    data['cleaned_first_author'] = cleaned_first_author
+
+    return data
+
