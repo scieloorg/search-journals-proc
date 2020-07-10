@@ -260,3 +260,40 @@ def convert_to_mongodoc(data):
 
     return mgdocs
 
+
+def persist_on_mongo(data):
+    """
+    Persiste na base Mongo os dados das chaves de de-duplicação.
+
+    :param data: Dados a serem persistidos
+    """
+    mongo_data = convert_to_mongodoc(data)
+
+    for k, v in mongo_data.items():
+        writer = get_mongo_connection(mongo_uri_scielo_search, DEDUPLICATED_CITATIONS_PREFIX + k)
+
+        operations = []
+        for cit_sha3_256 in v:
+            new_doc = v[cit_sha3_256]
+            operations.append(UpdateOne(
+                filter={'_id': str(cit_sha3_256)},
+                update={
+                    '$set': {
+                        'cit_keys': new_doc['cit_keys'],
+                        'update_date': new_doc['update_date']
+                    },
+                    '$addToSet': {
+                        'cit_full_ids': {'$each': new_doc['cit_full_ids']},
+                        'citing_docs': {'$each': new_doc['citing_docs']},
+                    }
+                },
+                upsert=True
+            ))
+
+            if len(operations) == 1000:
+                writer.bulk_write(operations)
+                operations = []
+
+        if len(operations) > 0:
+            writer.bulk_write(operations)
+
