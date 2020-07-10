@@ -183,3 +183,53 @@ def hash_keys(cit_data, keys):
     if data:
         return sha3_224(''.join(data).encode()).hexdigest()
 
+
+def extract_citations_ids_keys(document: Article, standardizer):
+    """
+    Extrai as quadras (id de citação, pares de campos de citação, hash da citação, base) para todos as citações.
+    São contemplados livros, capítulos de livros e artigos.
+
+    :param document: Documento do qual a lista de citações será convertida para hash
+    :param standardizer: Normalizador de título de periódico citado
+    :return: Quadra composta por id de citação, dicionário de nomes de campos e valores, hash de citação e base
+    """
+    citations_ids_keys = []
+
+    if document.citations:
+        for cit in [c for c in document.citations if c.publication_type in citation_types]:
+            cit_full_id = mount_citation_id(cit, document.collection_acronym)
+
+            if cit.publication_type == 'article':
+                cit_standardized_data = standardizer.find_one({'_id': cit_full_id, 'status': {'$gt': 0}})
+                cit_data = extract_citation_data(cit, cit_standardized_data)
+
+                for extra_key in ['volume', 'start_page', 'issue']:
+                    keys_i = ARTICLE_KEYS + ['cleaned_' + extra_key]
+
+                    article_hash_i = hash_keys(cit_data, keys_i)
+                    if article_hash_i:
+                        citations_ids_keys.append((cit_full_id,
+                                                   {k: cit_data[k] for k in keys_i if k in cit_data},
+                                                   article_hash_i,
+                                                   'article_' + extra_key))
+
+            else:
+                cit_data = extract_citation_data(cit)
+
+                book_hash = hash_keys(cit_data, BOOK_KEYS)
+                if book_hash:
+                    citations_ids_keys.append((cit_full_id,
+                                               {k: cit_data[k] for k in BOOK_KEYS if k in cit_data},
+                                               book_hash,
+                                               'book'))
+
+                    chapter_keys = BOOK_KEYS + ['cleaned_chapter_title', 'cleaned_chapter_first_author']
+
+                    chapter_hash = hash_keys(cit_data, chapter_keys)
+                    if chapter_hash:
+                        citations_ids_keys.append((cit_full_id,
+                                                   {k: cit_data[k] for k in chapter_keys if k in cit_data},
+                                                   chapter_hash,
+                                                   'chapter'))
+
+    return citations_ids_keys
