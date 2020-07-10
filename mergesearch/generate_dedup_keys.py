@@ -58,3 +58,19 @@ def get_mongo_connection(mongo_uri, collection=None):
         exit(1)
 
 
+def _extract_citation_fields_by_list(citation: Citation, fields):
+    """
+    Extrai de uma citação os campos indicados na variável fields.
+
+    :param citation: Citação da qual serão extraídos os campos
+    :param fields: Campos a serem extraídos
+    :return: Dicionário composto pelos pares campo: valor do campo
+    """
+    data = {}
+
+    for f in fields:
+        cleaned_v = get_cleaned_default(getattr(citation, f))
+        if cleaned_v:
+            data['cleaned_' + f] = cleaned_v
+
+    return data
