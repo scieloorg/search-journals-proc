@@ -73,6 +73,37 @@ class MergeSolr(object):
         logging.info('There are %d cited references identifiers to be merged.' % len(ids_for_merging))
 
         return ids_for_merging
+    def request_docs(self, ids):
+        """
+        Obtém documentos Solr.
+
+        :param ids: Lista de ids de documentos Solr a serem obtidos
+        :return: Dicionário contendo documentos Solr
+        """
+
+        response = {}
+
+        # O limite de cláusulas booleandas no Solr é 1024 (na configuração corrente)
+        # Por isso, é preciso fazer mais de uma query, caso o número de ids seja > 1023
+        if len(ids) < 1000:
+            query = 'id:(%s)' % ' OR '.join(ids)
+            response.update(eval(self.solr.select({'q': query, 'rows': SOLR_ROWS_LIMIT})))
+        else:
+            response = {'response': {'docs': []}}
+
+            for start_pos in range(0, len(ids), 1000):
+                last_pos = start_pos + 1000
+                if last_pos > len(ids):
+                    last_pos = len(ids)
+
+                i_query = 'id:(%s)' % ' OR '.join(ids[start_pos: last_pos])
+                i_response = eval(self.solr.select({'q': i_query, 'rows': SOLR_ROWS_LIMIT}))
+
+                if len(i_response.get('response', {}).get('docs')) > 0:
+                    response['response']['docs'].extend(i_response['response']['docs'])
+
+        return response
+
     def persist(self, data, data_name):
         """
         Persiste data no disco e no Solr, se indicado.
