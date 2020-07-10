@@ -105,6 +105,49 @@ def _extract_citation_authors(citation: Citation):
     return data
 
 
+def extract_citation_data(citation: Citation, cit_standardized_data=None):
+    """
+    Extrai os dados de uma citação.
+
+    :param citation: Citação da qual os dados serao extraidos
+    :param cit_standardized_data: Caso seja artigo, usa o padronizador de título de periódico
+    :return: Dicionário composto pelos pares de nomes dos ampos limpos das citações e respectivos valores
+    """
+    data = {}
+
+    data.update(_extract_citation_authors(citation))
+
+    cleaned_publication_date = get_cleaned_publication_date(citation.publication_date)
+    if cleaned_publication_date:
+        data['cleaned_publication_date'] = cleaned_publication_date
+
+    if citation.publication_type == 'article':
+        data.update(_extract_citation_fields_by_list(citation, ['issue', 'start_page', 'volume']))
+
+        cleaned_journal_title = ''
+        if cit_standardized_data:
+            cleaned_journal_title = cit_standardized_data['official-journal-title'][0].lower()
+            if cleaned_journal_title:
+                data['cleaned_journal_title'] = cleaned_journal_title
+
+        if not cleaned_journal_title:
+            cleaned_journal_title = get_cleaned_journal_title(citation.source)
+            if cleaned_journal_title:
+                data['cleaned_journal_title'] = cleaned_journal_title
+
+        cleaned_title = get_cleaned_default(citation.title())
+        if cleaned_title:
+            data['cleaned_title'] = cleaned_title
+
+    elif citation.publication_type == 'book':
+        data.update(_extract_citation_fields_by_list(citation, ['source', 'publisher', 'publisher_address']))
+
+        cleaned_chapter_title = get_cleaned_default(citation.chapter_title)
+        if cleaned_chapter_title:
+            data['cleaned_chapter_title'] = cleaned_chapter_title
+
+    return data
+
 
 def mount_citation_id(citation: Citation, collection_acronym):
     """
