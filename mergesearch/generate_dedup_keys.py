@@ -161,3 +161,25 @@ def mount_citation_id(citation: Citation, collection_acronym):
     cit_full_id = '{0}-{1}'.format(cit_id, collection_acronym)
     return cit_full_id
 
+
+def hash_keys(cit_data, keys):
+    """
+    Cria um codigo hash dos dados de uma citação, com base na lista de keys.
+
+    :param cit_data: Dicionário de pares de nome de campo e valor de campo de citação
+    :param keys: Nomes dos campos a serem considerados para formar o codigo hash
+    :return: Codigo hash SHA3_256 para os dados da citação
+    """
+    data = []
+    for k in keys:
+        if k in cit_data:
+            if cit_data[k]:
+                data.append(k + cit_data[k])
+            else:
+                return
+        else:
+            return
+
+    if data:
+        return sha3_224(''.join(data).encode()).hexdigest()
+
