@@ -314,3 +314,106 @@ def parallel_extract_citations_ids_keys(doc_id):
     if citations_keys:
         return '-'.join([doc.publisher_id, doc.collection_acronym]), citations_keys
 
+
+def main():
+    usage = "Gera chaves de de-duplicação de artigos, livros e capítulos citados."
+
+    parser = argparse.ArgumentParser(textwrap.dedent(usage))
+
+    parser.add_argument(
+        '-f', '--from_date',
+        help='Obtém apenas os PIDs de artigos publicados a partir da data especificada (use o formato YYYY-MM-DD)'
+    )
+
+    parser.add_argument(
+        '-b', '--book',
+        action='store_true',
+        default=None,
+        help='Obtém chaves para livros ou capítulos de livros citados'
+    )
+
+    parser.add_argument(
+        '-a', '--article',
+        action='store_true',
+        default=None,
+        help='Obtém chaves para artigos citados'
+    )
+
+    parser.add_argument(
+        '-c', '--chunk_size',
+        help='Tamanho de cada slice Mongo'
+    )
+
+    parser.add_argument(
+        '--mongo_uri_article_meta',
+        required=True,
+        help='String de conexão a base Mongo do ArticleMeta. '
+             'Usar o formato: mongodb://[username]:[password]@[host1]:[port1]/[database].[collection].'
+    )
+
+    parser.add_argument(
+        '--mongo_uri_scielo_search',
+        default=None,
+        help='String de conexão a base Mongo scielo_search. '
+             'Usar o formato: mongodb://[username]:[password]@[host1]:[port1]/[database].'
+    )
+
+    args = parser.parse_args()
+
+    global citation_types
+    global chunk_size
+    global mongo_uri_scielo_search
+    global mongo_uri_article_meta
+
+    if args.from_date:
+        mongo_filter = {'processing_date': {'$gte': args.from_date}}
+    else:
+        mongo_filter = {}
+
+    if args.book:
+        citation_types.add('book')
+    if args.article:
+        citation_types.add('article')
+
+    if args.chunk_size and args.chunk_size.isdigit() and int(args.chunk_size) > 0:
+        chunk_size = int(args.chunk_size)
+
+    if args.mongo_uri_scielo_search:
+        mongo_uri_scielo_search = args.mongo_uri_scielo_search
+
+    if args.mongo_uri_article_meta:
+        mongo_uri_article_meta = args.mongo_uri_article_meta
+
+    logging.basicConfig(level=logging.INFO)
+
+    logging.info('[Settings] citation types: %s, chunk size: %d, mongo filter: %s' % (citation_types, chunk_size, mongo_filter))
+
+    article_meta = get_mongo_connection(mongo_uri_article_meta)
+
+    logging.info('Getting articles\' identifiers')
+    start = time.time()
+
+    docs_ids = [x['_id'] for x in article_meta.find(mongo_filter, {'_id': 1})]
+    total_docs = len(docs_ids)
+
+    end = time.time()
+    logging.info('\tThere are %d articles to be readed' % total_docs)
+    logging.info('\tDone after %.2f seconds' % (end - start))
+
+    logging.info('[2] Generating keys...')
+    start = time.time()
+
+    chunks = range(0, total_docs, chunk_size)
+    for slice_start in chunks:
+        slice_end = slice_start + chunk_size
+        if slice_end > total_docs:
+            slice_end = total_docs
+
+        logging.info('\t%d to %d' % (slice_start, slice_end))
+        with Pool(os.cpu_count()) as p:
+            results = p.map(parallel_extract_citations_ids_keys, docs_ids[slice_start:slice_end])
+
+        persist_on_mongo(results)
+
+    end = time.time()
+    logging.info('\tDone after %.2f seconds' % (end - start))
