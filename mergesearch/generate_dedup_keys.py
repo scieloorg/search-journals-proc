@@ -297,3 +297,20 @@ def persist_on_mongo(data):
         if len(operations) > 0:
             writer.bulk_write(operations)
 
+
+def parallel_extract_citations_ids_keys(doc_id):
+    """
+    Extrai usando técnica de paralelização os hashes associados às citações.
+
+    :param doc_id: PID do documento cuja lista de referências citadas será processada
+    """
+    standardizer = get_mongo_connection(mongo_uri_scielo_search, COLLECTION_STANDARDIZED)
+    article_meta = get_mongo_connection(mongo_uri_article_meta)
+
+    raw = article_meta.find_one({'_id': doc_id})
+    doc = Article(raw)
+
+    citations_keys = extract_citations_ids_keys(doc, standardizer)
+    if citations_keys:
+        return '-'.join([doc.publisher_id, doc.collection_acronym]), citations_keys
+
