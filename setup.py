@@ -48,6 +48,7 @@ setup(
     update_search_preprint=updatepreprint.updatepreprint:main
     update_search_accesses=updatesearch.accesses:main
     update_search_citations=updatesearch.citations:main
+    merge_search=mergesearch.merge_solr:main
     gen_dedup_keys=mergesearch.generate_dedup_keys:main
     """
 )
