@@ -19,6 +19,8 @@ Após a instalação é criado no python os scripts de console:
 * update_search_preprint (Atualiza o índice com os Preprints oferecidos pelo servidor OAI: https://preprints.scielo.org/index.php/scielo/oai/?verb=ListRecords&metadataPrefix=oai_dc)
 * update_search_accesses (Atualiza os acessos dos documentos a partir do servidor de acessos: http://ratchet.scielo.org)
 * update_search_citations (Atualiza as citações recebidas e concedidas a partir do servidor de citações: http://citedby.scielo.org)
+* gen_dup_keys (Gera chaves de de-duplicação de referências citadas)
+* merge_search (Mescla documentos Solr com base em chaves de de-duplicação)
 
 
 ======================
@@ -103,6 +105,62 @@ Veja a lista de parâmetros presente nos scripts:
                           environment ``OAI_URL`` otherwise use --oai_url to set
                           the oai_url (preferable).
     -v, --version         show program's version number and exit
+
+``merge_search --help``
+
+::
+
+    usage: Mescla documentos Solr do tipo citation (entity=citation).
+
+           [-h] --mongo_uri MONGO_URI -b
+           {article_issue,article_start_page,article_volume,book,chapter}
+           [-f FROM_DATE] [--logging_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+           [-s]
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --mongo_uri MONGO_URI
+                            String de conexão a base Mongo que contem códigos
+                            identificadores de citações de-duplicadas. Usar o
+                            formato: mongodb://[username]:[password]@[host1]:[port
+                            1]/[database].[collection].
+      -b {article_issue,article_start_page,article_volume,book,chapter}, --cit_hash_base {article_issue,article_start_page,article_volume,book,chapter}
+                            Nome da base de chaves de de-duplicação de citações
+      -f FROM_DATE, --from_date FROM_DATE
+                            Obtém apenas as chaves cuja data de atualização é a
+                            partir da data especificada (use o formato YYYY-MM-DD)
+      --logging_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}, -l {DEBUG,INFO,WARNING,ERROR,CRITICAL}
+                            Logggin level
+      -s, --persist_on_solr
+                            Persiste resultados diretamente no Solr
+
+``gen_dedup_keys --help``
+
+::
+
+    usage: Gera chaves de de-duplicação de artigos, livros e capítulos citados.
+           [-h] [-f FROM_DATE] [-b] [-a] [-c CHUNK_SIZE] --mongo_uri_article_meta
+           MONGO_URI_ARTICLE_META
+           [--mongo_uri_scielo_search MONGO_URI_SCIELO_SEARCH]
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -f FROM_DATE, --from_date FROM_DATE
+                            Obtém apenas os PIDs de artigos publicados a partir da
+                            data especificada (use o formato YYYY-MM-DD)
+      -b, --book            Obtém chaves para livros ou capítulos de livros
+                            citados
+      -a, --article         Obtém chaves para artigos citados
+      -c CHUNK_SIZE, --chunk_size CHUNK_SIZE
+                            Tamanho de cada slice Mongo
+      --mongo_uri_article_meta MONGO_URI_ARTICLE_META
+                            String de conexão a base Mongo do ArticleMeta. Usar o
+                            formato: mongodb://[username]:[password]@[host1]:[port
+                            1]/[database].[collection].
+      --mongo_uri_scielo_search MONGO_URI_SCIELO_SEARCH
+                            String de conexão a base Mongo scielo_search. Usar o
+                            formato: mongodb://[username]:[password]@[host1]:[port
+                            1]/[database].
 
 
 ======================
