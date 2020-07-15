@@ -309,11 +309,12 @@ def main():
     else:
         mongo_filter = {}
 
+    mongo_database_name = uri_parser.parse_uri(args.mongo_uri).get('database')
     mongo_collection_name = uri_parser.parse_uri(args.mongo_uri).get('collection')
     if not mongo_collection_name:
         mongo_collection_name = args.cit_hash_base
     try:
-        mongo = MongoClient(args.mongo_uri).get_database().get_collection(mongo_collection_name)
+        mongo = MongoClient(args.mongo_uri).get_database(mongo_database_name).get_collection(mongo_collection_name)
     except ConnectionError as ce:
         logging.error(ce)
         exit(1)
