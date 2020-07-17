@@ -214,6 +214,9 @@ class MergeSolr(object):
                     merged_citation['volume'] = dc['cit_volume']
                 elif self.cit_hash_base == 'articles_issue':
                     merged_citation['issue'] = dc['cit_issue']
+                    
+                if '_version_' in merged_citation:
+                    del merged_citation['_version_']
 
                 ids_for_removing = self.merge_citation(merged_citation, citations[1:])
                 cits_for_merging.append(merged_citation)
