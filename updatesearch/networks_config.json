@@ -1,0 +1,3447 @@
+[
+  {
+    "journal_acronym": "raeel",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rprs",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ra",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbg",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbcf",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pfono",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ca",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbzool",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jsbf",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "roc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bioce",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bipoce",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jbsms",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbbio",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rfe",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pob",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbfv",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rousp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbcp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rsbf",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rm",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ne",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jbsmse",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jpneu",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "fb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ev",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "eq",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjvras",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjg",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jecn",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "eaa",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ea",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jvat",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cest",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "spp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cadsc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jbchs",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "mr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "hcsm",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "abo",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "afro",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbci",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ecoa",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rae",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "csc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "spmj",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "aa",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cam",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pn",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jbcos",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "txpp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "trends",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bdj",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "topoi",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rpc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "aem",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "aseb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ss",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rhc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "aio",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "abem",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbeb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "dpress",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjpp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rboto",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ln",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rem",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "remi",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ramb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "qn",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jtl",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "aval",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cflo",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "neco",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbe",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "gal",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "read",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "eh",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "interc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ensaio",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jmoea",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "tla",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "trans",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbeped",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ts",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbla",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rcaat",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "seq",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "sess",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "tema",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbeaa",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cm",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "dn",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "mael",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rh",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "acr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rimtsp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "codas",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "prc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbef",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rlae",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org",
+      "rve"
+    ]
+  },
+  {
+    "journal_acronym": "zool",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbfis",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "sp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbefe",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pm",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "sn",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjos",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rdp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "epsic",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bolema",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ce",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "kr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "remhu",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "floram",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rap",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bioet",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbf",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ref",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbh",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ep",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbgn",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjmbr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbso",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ides",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rsp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pg",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "abmvz",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "agora",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbrh",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "csp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbcsoc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pci",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ibju",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjorl",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rep",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbhh",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "prod",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jaos",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bbr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "asagr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "asas",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "fm",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "lajss",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rausp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "sssoc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbtur",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "esa",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "aob",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ijcs",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "abc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "dpjo",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "soc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ean",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org",
+      "rve"
+    ]
+  },
+  {
+    "journal_acronym": "ag",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ee",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jatm",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rdpsi",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jpe",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rdor",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "refuem",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rk",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jvb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "man",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbgo",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "civitas",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbpm",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bak",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbep",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "vb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cebape",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "urbe",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "aib",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "sant",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rn",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbspa",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "mioc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rcefac",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "elbc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rounesp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rod",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pusp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "po",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jiems",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "delta",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cniet",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjgeo",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbsmi",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bcg",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pab",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rdgv",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "si",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pee",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pcp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbca",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "asoc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjm",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "fractal",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ptp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jped",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ars",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "sdeb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ld",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbgg",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbme",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rsocp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbepop",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "babt",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "reng",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "sa",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjps",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pusf",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "lh",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbz",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pvb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ac",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rgo",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "htct",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "iao",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bn",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "isz",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "eins",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "aabc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbof",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bar",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jbpsiq",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "aesalq",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ress",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "anaismp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "his",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "mercator",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbort",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ni",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "paideia",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbmet",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rgenf",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org",
+      "rve"
+    ]
+  },
+  {
+    "journal_acronym": "rbedu",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "estpsi",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "sur",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pe",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ecos",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "tpp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rlpf",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "tce",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org",
+      "rve"
+    ]
+  },
+  {
+    "journal_acronym": "rmj",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rcf",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cpa",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rinc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "vh",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "adr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cagro",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "alea",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rmat",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "inter",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ci",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "epec",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "icse",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "fp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbepid",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbccv",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jistm",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "se",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "abd",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rceres",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "clin",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rpp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jcol",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjid",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjft",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rs",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbcs",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "gp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cta",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "reeusp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org",
+      "rve"
+    ]
+  },
+  {
+    "journal_acronym": "gmb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rba",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "tpsy",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbhe",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ram",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjce",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bgoeldi",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "paz",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rsbmt",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pboci",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "heduc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "sausoc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbpv",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rca",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cint",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbeur",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbem",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ct",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbfar",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jss",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "hb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "dados",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cbab",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ape",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org",
+      "rve"
+    ]
+  },
+  {
+    "journal_acronym": "jbn",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rcbc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "alb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "physis",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "resr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "mana",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ciedu",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jvatitd",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "motriz",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "tinf",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "tva",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rblc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jbpml",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "reben",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org",
+      "rve"
+    ]
+  },
+  {
+    "journal_acronym": "edur",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pope",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbent",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "abb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ccrh",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bor",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pd",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "tem",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rec",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rarv",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbti",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "nau",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "oh",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "archai",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "anp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "psoc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bjoce",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rboce",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ambiagua",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ocr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "er",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "alfa",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "jbpneu",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "hoehnea",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "riem",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ar",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cab",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "brjp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbee",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rieb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "alm",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "op",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pat",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "acb",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "tes",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rac",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "coluna",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "pteo",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "abcd",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "acrep",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbcdh",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "mov",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbpi",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbcpol",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "es",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "brag",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cp",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ha",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "nec",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "ccedes",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "edreal",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "osoc",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "eagri",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbce",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cerne",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "cadbto",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "bpsr",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "dilemas",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "medical",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "rbs",
+    "in": [
+      "scl"
+    ],
+    "networks": [
+      "org"
+    ]
+  }
+]

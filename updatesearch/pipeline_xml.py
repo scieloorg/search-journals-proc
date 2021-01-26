@@ -2,10 +2,15 @@
 from lxml import etree as ET
 
 import plumber
+import json
 from citedby import client
 
 
 CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')
+
+with open('updatesearch/networks_config.json') as json_file:
+    NETWORKS_CONFIG = json.load(json_file)
+
 
 """
 Full example output of this pipeline:
@@ -823,6 +828,25 @@ class Sponsor(plumber.Pipe):
             field = ET.Element('field')
             field.text = sponsor
             field.set('name', 'sponsor')
+            xml.find('.').append(field)
+
+        return data
+
+
+class Networks(plumber.Pipe):
+
+    def transform(self, data):
+        raw, xml = data
+
+        find_acronym = raw.journal.acronym
+        find_in = raw.journal.collection_acronym
+
+        network_list = next((journal['networks'] for journal in NETWORKS_CONFIG if journal['journal_acronym'] == find_acronym and find_in in journal['in']), None)
+
+        for network in network_list:
+            field = ET.Element('field')
+            field.text = network
+            field.set('name', 'network')
             xml.find('.').append(field)
 
         return data
