@@ -139,7 +139,9 @@ class UpdateSearch(object):
             pipeline_xml.Permission(),
             pipeline_xml.Keywords(),
             pipeline_xml.JournalISSNs(),
-            pipeline_xml.SubjectAreas()
+            pipeline_xml.SubjectAreas(),
+            pipeline_xml.Networks(),
+
         ]
 
         if self.load_indicators is True:
