@@ -841,7 +841,7 @@ class Networks(plumber.Pipe):
         find_acronym = raw.journal.acronym
         find_in = raw.journal.collection_acronym
 
-        network_list = next((journal['networks'] for journal in NETWORKS_CONFIG if journal['journal_acronym'] == find_acronym and find_in in journal['in']), None)
+        network_list = next((journal['networks'] for journal in NETWORKS_CONFIG if journal['journal_acronym'] == find_acronym and find_in in journal['in']), [])
 
         for network in network_list:
             field = ET.Element('field')
