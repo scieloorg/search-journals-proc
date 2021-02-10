@@ -8,7 +8,7 @@ from citedby import client
 
 CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')
 
-with open('updatesearch/networks_config.json') as json_file:
+with open('networks_config.json') as json_file:
     NETWORKS_CONFIG = json.load(json_file)
 
 
@@ -841,7 +841,7 @@ class Networks(plumber.Pipe):
         find_acronym = raw.journal.acronym
         find_in = raw.journal.collection_acronym
 
-        network_list = next((journal['networks'] for journal in NETWORKS_CONFIG if journal['journal_acronym'] == find_acronym and find_in in journal['in']), None)
+        network_list = next((journal['networks'] for journal in NETWORKS_CONFIG if journal['journal_acronym'] == find_acronym and find_in in journal['in']), [])
 
         for network in network_list:
             field = ET.Element('field')
