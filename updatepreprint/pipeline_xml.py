@@ -390,6 +390,19 @@ class Titles(plumber.Pipe):
         return data
 
 
+class Networks(plumber.Pipe):
+
+    def transform(self, data):
+        raw, xml = data
+
+        field = ET.Element('field')
+        field.text = "org"
+        field.set('name', 'network')
+        xml.find('.').append(field)
+
+        return data
+
+
 class TearDown(plumber.Pipe):
 
     def transform(self, data):

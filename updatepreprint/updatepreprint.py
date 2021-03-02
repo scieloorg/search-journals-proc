@@ -41,6 +41,7 @@ class UpdatePreprint(object):
 
     parser.add_argument('-solr_url', '--solr_url',
                         dest='solr_url',
+                        default="http://solr.scielo.org/solr/articles",
                         help='Solr RESTFul URL, processing try to get the variable from environment ``SOLR_URL`` otherwise use --solr_url to set the solr_url (preferable).')
 
     parser.add_argument('-oai_url', '--oai_url',
@@ -96,6 +97,7 @@ class UpdatePreprint(object):
             pipeline_xml.Abstract(),
             pipeline_xml.Authors(),
             pipeline_xml.AvailableLanguages(),
+            pipeline_xml.Networks(),
 
             pipeline_xml.TearDown()
         )
