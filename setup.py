@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 install_requires = [
     'requests>=2.18.1',
-    'lxml==4.5.0',
+    'lxml==4.6.3',
     'raven==6.1.0',
     'articlemetaapi==1.23.0',
     'accessstatsapi==1.2.0',
