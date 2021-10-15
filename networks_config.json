@@ -14546,6 +14546,42 @@
     ]
   },
   {
+    "journal_acronym": "rcmhnaaa",
+    "in": [
+      "per"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "interac",
+    "in": [
+      "per"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "devenir",
+    "in": [
+      "per"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
+    "journal_acronym": "contrat",
+    "in": [
+      "per"
+    ],
+    "networks": [
+      "org"
+    ]
+  },
+  {
     "journal_acronym": "ccv",
     "in": [
       "pry"
