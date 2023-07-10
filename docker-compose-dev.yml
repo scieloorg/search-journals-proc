@@ -7,16 +7,20 @@ services:
         context: .
         dockerfile: ./Dockerfile-dev
     environment:
-      - SOLR_URL=http://localhost:8983/solr/article
+      - SOLR_URL=http://localhost:8983/solr/articles
       - LOGGING_LEVEL=DEBUG
-    command: update_search -c sss -p 30
+      - DEBUG=True
+    command: python updatesearch/metadata.py -c spa
 
   update-search-preprint:
     build:
         context: .
         dockerfile: ./Dockerfile-dev
+    volumes:
+      - .:/app
     environment:
-      - SOLR_URL=http://localhost:8983/solr/article
+      - SOLR_URL=http://localhost:8983/solr/articles
       - OAI_URL=https://preprints.scielo.org/index.php/scielo/oai
       - LOGGING_LEVEL=DEBUG
-    command: update_search_preprint -p 1
+      - DEBUG=True
+    command: python updatepreprint/updatepreprint.py -t 1

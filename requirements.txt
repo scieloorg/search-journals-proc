@@ -1,0 +1,11 @@
+requests
+lxml==4.5.0
+raven==6.1.0
+articlemetaapi==1.23.0
+accessstatsapi==1.2.0
+citedbyapi==1.8.0
+picles.plumber==0.10
+Sickle==0.6.5
+langcodes==1.4.1
+-e git+https://github.com/picleslivre/solrapi@master#egg=solrapi
+certifi

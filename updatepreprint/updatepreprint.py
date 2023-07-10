@@ -3,20 +3,18 @@
 
 from __future__ import print_function
 
+import argparse
 import os
 import sys
-import time
-import argparse
 import textwrap
+import time
 from datetime import datetime, timedelta
 
-from lxml import etree as ET
-
+import pipeline_xml
 import plumber
-from updatepreprint import pipeline_xml
+from lxml import etree as ET
 from sickle import Sickle
 from sickle.oaiexceptions import NoRecordsMatch
-
 from SolrAPI import Solr
 
 

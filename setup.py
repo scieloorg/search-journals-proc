@@ -1,25 +1,13 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-install_requires = [
-    'requests>=2.18.1',
-    'lxml==4.5.0',
-    'raven==6.1.0',
-    'articlemetaapi==1.23.0',
-    'accessstatsapi==1.2.0',
-    'citedbyapi==1.8.0',
-    'picles.plumber==0.10',
-    'Sickle==0.6.5',
-    'langcodes==1.4.1',
-    'solrapi>=1.2.0',
-    'certifi'
-]
+install_requires = []
 
 tests_require = []
 
 setup(
     name="UpdateSearch",
-    version='1.16.0',
+    version='1.17.0',
     description="Process article to Solr",
     author="SciELO",
     author_email="scielo-dev@googlegroups.com",
@@ -33,9 +21,6 @@ setup(
         "Topic :: Utilities",
         "Programming Language :: Python",
         "Operating System :: POSIX :: Linux",
-    ],
-    dependency_links=[
-        "git+https://github.com/picleslivre/solrapi@1.0.0#egg=solrapi-1.0.0"
     ],
     test_suite='tests',
     tests_require=tests_require,

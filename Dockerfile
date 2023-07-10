@@ -1,8 +1,6 @@
 FROM python:3.6-alpine
 ENV PYTHONUNBUFFERED 1
 
-MAINTAINER tecnologia@scielo.org
-
 RUN apk --update add --no-cache \
     git gcc build-base zlib-dev jpeg-dev curl libxml2-dev libxslt-dev py3-lxml libressl libressl-dev ca-certificates
 
@@ -13,10 +11,10 @@ RUN chmod -R 755 /app/*
 
 WORKDIR /app
 
-RUN python setup.py install
+RUN pip install -r requirements.txt
 
 RUN chown -R nobody:nogroup /app
 USER nobody
 
-CMD ["update_search", "--help"]
+CMD ["python", "/app/updatesearch/metadata.py", "--help"]
 

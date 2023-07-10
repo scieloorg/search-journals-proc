@@ -7,7 +7,7 @@ services:
     environment:
       - SOLR_URL=http://127.0.0.1:8080/solr/index
       - LOGGING_LEVEL=DEBUG
-    command: update_search -c sss -p 30
+    command: python updatesearch/metadata.py -c sss -p 30
 
   update-search-preprint:
     image: scieloorg/update_search_proc:stable
@@ -15,4 +15,4 @@ services:
       - SOLR_URL=http://localhost:8983/solr/article
       - OAI_URL=https://preprints.scielo.org/index.php/scielo/oai
       - LOGGING_LEVEL=DEBUG
-    command: update_search_preprint -p 1
+    command: python updatepreprint/updatepreprint.py -t 1

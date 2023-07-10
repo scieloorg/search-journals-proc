@@ -1,67 +1,28 @@
 #!/usr/bin/python
 # coding: utf-8
 import os
-import sys
 import time
 import json
 import argparse
-import logging
-import logging.config
 import textwrap
-import itertools
 from datetime import datetime, timedelta
 
 from lxml import etree as ET
 from SolrAPI import Solr
 import plumber
-from articlemeta.client import ThriftClient
 
-from updatesearch import pipeline_xml
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
+# Debug mode
+if DEBUG:
+    from articlemeta.client import RestfulClient as AMClient
+else:
+    from articlemeta.client import ThriftClient as AMClient
 
-logger = logging.getLogger(__name__)
+import pipeline_xml
+
 
 SOLR_URL = os.environ.get('SOLR_URL', 'http://127.0.0.1/solr')
-SENTRY_HANDLER = os.environ.get('SENTRY_HANDLER', None)
-LOGGING_LEVEL = os.environ.get('LOGGING_LEVEL', 'DEBUG')
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-
-    'formatters': {
-        'console': {
-            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            'datefmt': '%H:%M:%S',
-            },
-        },
-    'handlers': {
-        'console': {
-            'level': LOGGING_LEVEL,
-            'class': 'logging.StreamHandler',
-            'formatter': 'console'
-            }
-        },
-    'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': LOGGING_LEVEL,
-            'propagate': False,
-            },
-        'updatesearch.metadata': {
-            'level': LOGGING_LEVEL,
-            'propagate': True,
-        },
-    }
-}
-
-if SENTRY_HANDLER:
-    LOGGING['handlers']['sentry'] = {
-        'level': 'ERROR',
-        'class': 'raven.handlers.logging.SentryHandler',
-        'dsn': SENTRY_HANDLER,
-    }
-    LOGGING['loggers']['']['handlers'].append('sentry')
-
 
 class UpdateSearch(object):
     """
@@ -162,14 +123,14 @@ class UpdateSearch(object):
         return ET.tostring(add, encoding="utf-8", method="xml")
 
     def differential_mode(self):
-        art_meta = ThriftClient()
+        art_meta = AMClient()
 
-        logger.info("Running with differential mode")
+        print("Running with differential mode")
         ind_ids = set()
         art_ids = set()
 
         # all ids in search index
-        logger.info("Loading Search Index ids.")
+        print("Loading Search Index ids.")
         itens_query = []
         if self.collection:
             itens_query.append('in:%s' % self.collection)
@@ -185,7 +146,7 @@ class UpdateSearch(object):
             ind_ids.add('%s-%s' % (id['id'], id.get('scielo_processing_date', '1900-01-01')))
 
         # all ids in articlemeta
-        logger.info("Loading ArticleMeta ids.")
+        print("Loading ArticleMeta ids.")
         for item in art_meta.documents(
             collection=self.collection,
             issn=self.issn,
@@ -195,23 +156,23 @@ class UpdateSearch(object):
 
         # Ids to remove
         if self.delete is True:
-            logger.info("Running remove records process.")
+            print("Running remove records process.")
             remove_ids = set([i[:27] for i in ind_ids]) - set([i[:27] for i in art_ids])
-            logger.info("Removing (%d) documents from search index." % len(remove_ids))
+            print("Removing (%d) documents from search index." % len(remove_ids))
             total_to_remove = len(remove_ids)
             if total_to_remove > 0:
                 for ndx, to_remove_id in enumerate(remove_ids, 1):
-                    logger.debug("Removing (%d/%d): %s" % (ndx, total_to_remove, to_remove_id))
+                    print("Removing (%d/%d): %s" % (ndx, total_to_remove, to_remove_id))
                     self.solr.delete('id:%s' % to_remove_id, commit=False)
 
         # Ids to include
-        logger.info("Running include records process.")
+        print("Running include records process.")
         include_ids = art_ids - ind_ids
-        logger.info("Including (%d) documents to search index." % len(include_ids))
+        print("Including (%d) documents to search index." % len(include_ids))
         total_to_include = len(include_ids)
         if total_to_include > 0:
             for ndx, to_include_id in enumerate(include_ids, 1):
-                logger.debug("Including (%d/%d): %s" % (ndx, total_to_include, to_include_id))
+                print("Including (%d/%d): %s" % (ndx, total_to_include, to_include_id))
                 code = to_include_id[:23]
                 collection = to_include_id[24: 27]
                 processing_date = to_include_id[:-11]
@@ -220,19 +181,20 @@ class UpdateSearch(object):
                     xml = self.pipeline_to_xml(document)
                     self.solr.update(xml, commit=False)
                 except ValueError as e:
-                    logger.error("ValueError: {0}".format(e))
-                    logger.exception(e)
+                    print("ValueError: {0}".format(e))
+                    print(e)
                     continue
                 except Exception as e:
-                    logger.error("Error: {0}".format(e))
-                    logger.exception(e)
+                    print("Error: {0}".format(e))
+                    print(e)
                     continue
 
     def common_mode(self):
-        art_meta = ThriftClient()
+        art_meta = AMClient()
 
-        logger.info("Running without differential mode")
-        logger.info("Indexing in {0}".format(self.solr.url))
+        print("Running without differential mode")
+        print("Indexing in {0}".format(self.solr.url))
+        print("Collection: {0}".format(self.collection))
         for document in art_meta.documents(
             collection=self.collection,
             issn=self.issn,
@@ -240,22 +202,22 @@ class UpdateSearch(object):
             until_date=self.format_date(self.until_date)
         ):
 
-            logger.debug("Loading document %s" % '_'.join([document.collection_acronym, document.publisher_id]))
+            print("Loading document %s" % '_'.join([document.collection_acronym, document.publisher_id]))
 
             try:
                 xml = self.pipeline_to_xml(document)
                 self.solr.update(xml, commit=False)
             except ValueError as e:
-                logger.error("ValueError: {0}".format(e))
-                logger.exception(e)
+                print("ValueError: {0}".format(e))
+                print(e)
                 continue
             except Exception as e:
-                logger.error("Error: {0}".format(e))
-                logger.exception(e)
+                print("Error: {0}".format(e))
+                print(e)
                 continue
 
         if self.delete is True:
-            logger.info("Running remove records process.")
+            print("Running remove records process.")
             ind_ids = set()
             art_ids = set()
 
@@ -283,10 +245,10 @@ class UpdateSearch(object):
                 art_ids.add('%s-%s' % (item.code, item.collection))
             # Ids to remove
             total_to_remove = len(remove_ids)
-            logger.info("Removing (%d) documents from search index." % len(remove_ids))
+            print("Removing (%d) documents from search index." % len(remove_ids))
             remove_ids = ind_ids - art_ids
             for ndx, to_remove_id in enumerate(remove_ids, 1):
-                logger.debug("Removing (%d/%d): %s" % (ndx, total_to_remove, to_remove_id))
+                print("Removing (%d/%d): %s" % (ndx, total_to_remove, to_remove_id))
                 self.solr.delete('id:%s' % to_remove_id, commit=False)
 
     def run(self):
@@ -371,20 +333,7 @@ def main():
         help='delete query ex.: q=*:* (Lucene Syntax).'
     )
 
-    parser.add_argument(
-        '--logging_level',
-        '-l',
-        default=LOGGING_LEVEL,
-        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
-        help='Logggin level'
-    )
-
     args = parser.parse_args()
-    LOGGING['handlers']['console']['level'] = args.logging_level
-    for lg, content in LOGGING['loggers'].items():
-        content['level'] = args.logging_level
-
-    logging.config.dictConfig(LOGGING)
 
     start = time.time()
 
@@ -401,8 +350,11 @@ def main():
         )
         us.run()
     except KeyboardInterrupt:
-        logger.critical("Interrupt by user")
+        print("Interrupt by user")
     finally:
         # End Time
         end = time.time()
-        logger.info("Duration {0} seconds.".format(end-start))
+        print("Duration {0} seconds.".format(end-start))
+
+if __name__ == "__main__":
+    main()
