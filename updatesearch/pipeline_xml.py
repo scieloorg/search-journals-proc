@@ -113,7 +113,7 @@ class Keywords(plumber.Pipe):
         for language, keywords in raw.keywords().items():
             for keyword in keywords:
                 field = ET.Element('field')
-                field.text = keyword
+                field.text = clean_text(keyword)
                 field.set('name', 'keyword_%s' % language)
 
                 xml.find('.').append(field)
