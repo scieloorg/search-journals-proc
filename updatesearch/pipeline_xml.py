@@ -741,7 +741,7 @@ class Abstract(plumber.Pipe):
 
         if raw.original_abstract():
             field = ET.Element('field')
-            field.text = raw.original_abstract()
+            field.text = clean_text(raw.original_abstract())
             field.set('name', 'ab_%s' % raw.original_language())
             xml.find('.').append(field)
 
@@ -750,7 +750,7 @@ class Abstract(plumber.Pipe):
 
         for language, abstract in raw.translated_abstracts().items():
             field = ET.Element('field')
-            field.text = abstract
+            field.text = clean_text(abstract)
             field.set('name', 'ab_%s' % language)
             xml.find('.').append(field)
 
