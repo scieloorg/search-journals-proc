@@ -4,12 +4,14 @@ from lxml import etree as ET
 import plumber
 import json
 from citedby import client
+from text_cleaner import clean_text
 
 
 CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')
 
 with open('networks_config.json') as json_file:
     NETWORKS_CONFIG = json.load(json_file)
+
 
 
 """
@@ -340,7 +342,7 @@ class OriginalTitle(plumber.Pipe):
         raw, xml = data
 
         field = ET.Element('field')
-        field.text = raw.original_title()
+        field.text = clean_text(raw.original_title())
         field.set('name', 'ti')
         xml.find('.').append(field)
 
@@ -361,7 +363,7 @@ class Titles(plumber.Pipe):
         raw, xml = data
 
         field = ET.Element('field')
-        field.text = raw.original_title()
+        field.text = clean_text(raw.original_title())
         field.set('name', 'ti_%s' % raw.original_language())
         xml.find('.').append(field)
 
@@ -370,7 +372,7 @@ class Titles(plumber.Pipe):
 
         for language, title in raw.translated_titles().items():
             field = ET.Element('field')
-            field.text = title
+            field.text = clean_text(title)
             field.set('name', 'ti_%s' % language)
             xml.find('.').append(field)
 
