@@ -4,12 +4,14 @@ from lxml import etree as ET
 import plumber
 import json
 from citedby import client
+from text_cleaner import clean_text
 
 
 CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')
 
 with open('networks_config.json') as json_file:
     NETWORKS_CONFIG = json.load(json_file)
+
 
 
 """
@@ -111,7 +113,7 @@ class Keywords(plumber.Pipe):
         for language, keywords in raw.keywords().items():
             for keyword in keywords:
                 field = ET.Element('field')
-                field.text = keyword
+                field.text = clean_text(keyword)
                 field.set('name', 'keyword_%s' % language)
 
                 xml.find('.').append(field)
@@ -340,7 +342,7 @@ class OriginalTitle(plumber.Pipe):
         raw, xml = data
 
         field = ET.Element('field')
-        field.text = raw.original_title()
+        field.text = clean_text(raw.original_title())
         field.set('name', 'ti')
         xml.find('.').append(field)
 
@@ -361,7 +363,7 @@ class Titles(plumber.Pipe):
         raw, xml = data
 
         field = ET.Element('field')
-        field.text = raw.original_title()
+        field.text = clean_text(raw.original_title())
         field.set('name', 'ti_%s' % raw.original_language())
         xml.find('.').append(field)
 
@@ -370,7 +372,7 @@ class Titles(plumber.Pipe):
 
         for language, title in raw.translated_titles().items():
             field = ET.Element('field')
-            field.text = title
+            field.text = clean_text(title)
             field.set('name', 'ti_%s' % language)
             xml.find('.').append(field)
 
@@ -739,7 +741,7 @@ class Abstract(plumber.Pipe):
 
         if raw.original_abstract():
             field = ET.Element('field')
-            field.text = raw.original_abstract()
+            field.text = clean_text(raw.original_abstract())
             field.set('name', 'ab_%s' % raw.original_language())
             xml.find('.').append(field)
 
@@ -748,7 +750,7 @@ class Abstract(plumber.Pipe):
 
         for language, abstract in raw.translated_abstracts().items():
             field = ET.Element('field')
-            field.text = abstract
+            field.text = clean_text(abstract)
             field.set('name', 'ab_%s' % language)
             xml.find('.').append(field)
 
