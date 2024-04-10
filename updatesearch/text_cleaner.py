@@ -1,7 +1,6 @@
 def clean_text(text):
     """
-    Retorna no início todas as strings encontradas em `text`,
-    seguidas de versões das strings que contém caracteres diferentes de letras,
+    Retorna versões das strings que contém caracteres diferentes de letras,
     por exemplo, no texto:
     '“Quem não se comunica se trumbica”: comportamento decisório e estratégias de autopromoção do Supremo Tribunal Federal1', as strings são:
     - “Quem
@@ -14,19 +13,20 @@ def clean_text(text):
     - trumbica”: se converte a trumbica” e trumbica
     - Federal1 se converte a Federal
 
-    Observe a entrada e a saída, que contém o texto inicial seguido das strings convertidas
+    Observe a entrada e a saída, que contém as strings convertidas
 
     In : clean_text('“Quem não se comunica se trumbica”: comportamento decisório e estratégias de autopromoção do Supremo Tribunal Federal1')
-    Out: '“Quem não se comunica se trumbica”: comportamento decisório e estratégias de autopromoção do Supremo Tribunal Federal1 Quem trumbica trumbica” Federal'
+    Out: 'trumbica Federal trumbica” Quem'
 
     """
     # mantém todas as str originais
     words = [w.strip() for w in text.split() if w.strip()]
 
-    # verifica se todas as str são alpha, retorna text original
+    # verifica se todas as str são alpha, retorna None
     if "".join(words).isalpha():
-        return text
+        return None
 
+    new_words = set()
     to_fix = _get_non_alpha_words(words)
     for word in to_fix:
 
@@ -37,13 +37,13 @@ def clean_text(text):
         for w in _fix_words(word):
             for part in w.split():
                 if part not in words:
-                    words.append(part)
+                    new_words.add(part)
 
         # obtém versão da str sem o caracter final se ele não for alpha e a adiciona se for inédita
         if word and not word[-1].isalpha():
             if word[:-1] and word[:-1] not in words:
-                words.append(word[:-1])
-    return " ".join(words)
+                new_words.add(word[:-1])
+    return " ".join(new_words)
 
 
 def _get_non_alpha_words(words):

@@ -113,10 +113,16 @@ class Keywords(plumber.Pipe):
         for language, keywords in raw.keywords().items():
             for keyword in keywords:
                 field = ET.Element('field')
-                field.text = clean_text(keyword)
+                field.text = keyword
                 field.set('name', 'keyword_%s' % language)
-
                 xml.find('.').append(field)
+
+                cleaned = clean_text(keyword)
+                if cleaned:
+                    field = ET.Element('field')
+                    field.text = cleaned
+                    field.set('name', 'cleaned_keyword_%s' % language)
+                    xml.find('.').append(field)
 
         return data
 
@@ -342,7 +348,7 @@ class OriginalTitle(plumber.Pipe):
         raw, xml = data
 
         field = ET.Element('field')
-        field.text = clean_text(raw.original_title())
+        field.text = raw.original_title()
         field.set('name', 'ti')
         xml.find('.').append(field)
 
@@ -363,18 +369,32 @@ class Titles(plumber.Pipe):
         raw, xml = data
 
         field = ET.Element('field')
-        field.text = clean_text(raw.original_title())
+        field.text = raw.original_title()
         field.set('name', 'ti_%s' % raw.original_language())
         xml.find('.').append(field)
+
+        cleaned = clean_text(field.text)
+        if cleaned:
+            field = ET.Element('field')
+            field.text = cleaned
+            field.set('name', 'cleaned_ti_%s' % raw.original_language())
+            xml.find('.').append(field)
 
         if not raw.translated_titles():
             return data
 
         for language, title in raw.translated_titles().items():
             field = ET.Element('field')
-            field.text = clean_text(title)
+            field.text = title
             field.set('name', 'ti_%s' % language)
             xml.find('.').append(field)
+
+            cleaned = clean_text(title)
+            if cleaned:
+                field = ET.Element('field')
+                field.text = cleaned
+                field.set('name', 'cleaned_ti_%s' % language)
+                xml.find('.').append(field)
 
         return data
 
@@ -741,18 +761,32 @@ class Abstract(plumber.Pipe):
 
         if raw.original_abstract():
             field = ET.Element('field')
-            field.text = clean_text(raw.original_abstract())
+            field.text = raw.original_abstract()
             field.set('name', 'ab_%s' % raw.original_language())
             xml.find('.').append(field)
+
+            cleaned = clean_text(field.text)
+            if cleaned:
+                field = ET.Element('field')
+                field.text = cleaned
+                field.set('name', 'cleaned_ab_%s' % raw.original_language())
+                xml.find('.').append(field)
 
         if not raw.translated_abstracts():
             return data
 
         for language, abstract in raw.translated_abstracts().items():
             field = ET.Element('field')
-            field.text = clean_text(abstract)
+            field.text = abstract
             field.set('name', 'ab_%s' % language)
             xml.find('.').append(field)
+
+            cleaned = clean_text(abstract)
+            if cleaned:
+                field = ET.Element('field')
+                field.text = cleaned
+                field.set('name', 'cleaned_ab_%s' % language)
+                xml.find('.').append(field)
 
         return data
 
