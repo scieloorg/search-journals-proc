@@ -27,25 +27,28 @@ def clean_text(text):
     if "".join(words).isalpha():
         return text
 
-    to_fix = _get_words_to_fix(words)
+    to_fix = _get_non_alpha_words(words)
     for word in to_fix:
 
-        # obtém versões alphanum e alpha da str e a adiciona se for inédita
+        if not word:
+            continue
+
+        # obtém versões alphanum e alpha da str word e a adiciona se for inédita
         for w in _fix_words(word):
             for part in w.split():
                 if part not in words:
                     words.append(part)
 
         # obtém versão da str sem o caracter final se ele não for alpha e a adiciona se for inédita
-        if not word[-1].isalpha():
-            if word[:-1] not in words:
+        if word and not word[-1].isalpha():
+            if word[:-1] and word[:-1] not in words:
                 words.append(word[:-1])
     return " ".join(words)
 
 
-def _get_words_to_fix(words):
+def _get_non_alpha_words(words):
     for word in words:
-        if not word.isalpha():
+        if word and not word.isalpha():
             yield word
 
 
