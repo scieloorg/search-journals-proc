@@ -30,10 +30,11 @@ class UpdateSearch(object):
     """
 
     def __init__(self, period=None, from_date=None, until_date=None,
-                 collection=None, issn=None, delete=False, differential=False,
-                 load_indicators=False):
+                 collection=None, network=None, issn=None, delete=False,
+                 differential=False, load_indicators=False):
         self.delete = delete
         self.collection = collection
+        self.network = network
         self.from_date = from_date
         self.until_date = until_date
         self.differential = differential
@@ -118,6 +119,13 @@ class UpdateSearch(object):
         add = ET.Element('add')
 
         for xml in xmls:
+            if self.network:
+                # Add field network passed by argument
+                field_network = ET.Element('field')
+                field_network.text = self.network
+                field_network.set('name', 'network')
+                xml.find('.').append(field_network)
+
             add.append(xml)
 
         return ET.tostring(add, encoding="utf-8", method="xml")
@@ -321,6 +329,12 @@ def main():
     )
 
     parser.add_argument(
+        '-w', '--network',
+        default=None,
+        help='use to mark articles with specific network. eg.: rve, org.'
+    )
+
+    parser.add_argument(
         '-i', '--issn',
         default=None,
         help='journal issn.'
@@ -343,6 +357,7 @@ def main():
             from_date=args.from_date,
             until_date=args.until_date,
             collection=args.collection,
+            network=args.network,
             issn=args.issn,
             delete=args.delete,
             differential=args.differential,
