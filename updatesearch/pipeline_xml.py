@@ -4,14 +4,12 @@ from lxml import etree as ET
 import plumber
 import json
 from citedby import client
-from text_cleaner import clean_text
 
 
 CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')
 
 with open('networks_config.json') as json_file:
     NETWORKS_CONFIG = json.load(json_file)
-
 
 
 """
@@ -115,14 +113,8 @@ class Keywords(plumber.Pipe):
                 field = ET.Element('field')
                 field.text = keyword
                 field.set('name', 'keyword_%s' % language)
-                xml.find('.').append(field)
 
-                cleaned = clean_text(keyword)
-                if cleaned:
-                    field = ET.Element('field')
-                    field.text = cleaned
-                    field.set('name', 'cleaned_keyword_%s' % language)
-                    xml.find('.').append(field)
+                xml.find('.').append(field)
 
         return data
 
@@ -373,13 +365,6 @@ class Titles(plumber.Pipe):
         field.set('name', 'ti_%s' % raw.original_language())
         xml.find('.').append(field)
 
-        cleaned = clean_text(field.text)
-        if cleaned:
-            field = ET.Element('field')
-            field.text = cleaned
-            field.set('name', 'cleaned_ti_%s' % raw.original_language())
-            xml.find('.').append(field)
-
         if not raw.translated_titles():
             return data
 
@@ -388,13 +373,6 @@ class Titles(plumber.Pipe):
             field.text = title
             field.set('name', 'ti_%s' % language)
             xml.find('.').append(field)
-
-            cleaned = clean_text(title)
-            if cleaned:
-                field = ET.Element('field')
-                field.text = cleaned
-                field.set('name', 'cleaned_ti_%s' % language)
-                xml.find('.').append(field)
 
         return data
 
@@ -765,13 +743,6 @@ class Abstract(plumber.Pipe):
             field.set('name', 'ab_%s' % raw.original_language())
             xml.find('.').append(field)
 
-            cleaned = clean_text(field.text)
-            if cleaned:
-                field = ET.Element('field')
-                field.text = cleaned
-                field.set('name', 'cleaned_ab_%s' % raw.original_language())
-                xml.find('.').append(field)
-
         if not raw.translated_abstracts():
             return data
 
@@ -780,13 +751,6 @@ class Abstract(plumber.Pipe):
             field.text = abstract
             field.set('name', 'ab_%s' % language)
             xml.find('.').append(field)
-
-            cleaned = clean_text(abstract)
-            if cleaned:
-                field = ET.Element('field')
-                field.text = cleaned
-                field.set('name', 'cleaned_ab_%s' % language)
-                xml.find('.').append(field)
 
         return data
 
