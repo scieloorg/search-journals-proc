@@ -80,6 +80,8 @@ class UpdateSearch(object):
             pipeline_xml.JournalAbbrevTitle(),
             pipeline_xml.Languages(),
             pipeline_xml.AvailableLanguages(),
+            pipeline_xml.HTMLLanguages(),
+            pipeline_xml.PDFLanguages(),
             pipeline_xml.Fulltexts(),
             pipeline_xml.PublicationDate(),
             pipeline_xml.SciELOPublicationDate(),

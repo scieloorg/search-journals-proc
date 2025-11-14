@@ -540,6 +540,68 @@ class ExportTests(unittest.TestCase):
 
         self.assertEqual(['en', 'es', 'pt'], sorted([i.text for i in result]))
 
+    def test_xml_document_html_languages_pipe(self):
+        
+        pxml = ET.Element('doc')
+        pxml.append(ET.Element('doc'))
+
+        data = [self._article_meta, pxml]
+
+        xmlarticle = pipeline_xml.HTMLLanguages()
+        raw, xml = xmlarticle.transform(data)
+
+        result = xml.findall('./field[@name="html_languages"]')
+
+        self.assertEqual(["en", "it", "jp"], sorted([i.text for i in result]))
+
+    def test_xml_document_html_languages_pipe_without_lanaguages(self):
+        
+        pxml = ET.Element('doc')
+        pxml.append(ET.Element('doc'))
+
+        # remove os idiomas
+        del self._article_meta.data["article"]["fulltext_langs"] 
+
+        data = [self._article_meta, pxml]
+
+        xmlarticle = pipeline_xml.HTMLLanguages()
+        raw, xml = xmlarticle.transform(data)
+
+        result = xml.findall('./field[@name="html_languages"]')
+
+        self.assertEqual([], sorted([i.text for i in result]))
+
+    def test_xml_document_pdf_languages_pipe(self):
+        
+        pxml = ET.Element('doc')
+        pxml.append(ET.Element('doc'))
+
+        data = [self._article_meta, pxml]
+
+        xmlarticle = pipeline_xml.PDFLanguages()
+        raw, xml = xmlarticle.transform(data)
+
+        result = xml.findall('./field[@name="pdf_languages"]')
+
+        self.assertEqual(['do', 'en', 'ru'], sorted([i.text for i in result]))
+
+    def test_xml_document_pdf_languages_pipe_without_lanaguages(self):
+        
+        pxml = ET.Element('doc')
+        pxml.append(ET.Element('doc'))
+
+        # remove os idiomas
+        del self._article_meta.data["article"]["fulltext_langs"] 
+
+        data = [self._article_meta, pxml]
+
+        xmlarticle = pipeline_xml.PDFLanguages()
+        raw, xml = xmlarticle.transform(data)
+
+        result = xml.findall('./field[@name="pdf_languages"]')
+
+        self.assertEqual([], sorted([i.text for i in result]))
+
     def test_xml_document_fulltexts_pipe(self):
 
         pxml = ET.Element('doc')

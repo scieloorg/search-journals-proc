@@ -636,6 +636,38 @@ class AvailableLanguages(plumber.Pipe):
             xml.find('.').append(field)
 
         return data
+class HTMLLanguages(plumber.Pipe):
+
+    def transform(self, data):
+        raw, xml = data
+
+        langs = []
+        if raw.data.get("article").get("fulltext_langs", []):
+            langs = raw.data.get("article").get("fulltext_langs").get("html")
+
+        for language in langs:
+            field = ET.Element('field')
+            field.text = language
+            field.set('name', 'html_languages')
+            xml.find('.').append(field)
+        
+        return data
+class PDFLanguages(plumber.Pipe):
+
+    def transform(self, data):
+        raw, xml = data
+
+        langs = []
+        if raw.data.get("article").get("fulltext_langs", []):
+            langs = raw.data.get("article").get("fulltext_langs").get("pdf")
+
+        for language in langs:
+            field = ET.Element('field')
+            field.text = language
+            field.set('name', 'pdf_languages')
+            xml.find('.').append(field)
+        
+        return data
 
 
 class Fulltexts(plumber.Pipe):
