@@ -130,6 +130,21 @@ class ExportTests(unittest.TestCase):
 
         self.assertEqual('is_true', result)
 
+    def test_is_citable_true_data_article(self):
+
+        pxml = ET.Element('doc')
+
+        self._article_meta.data['article']['v71'] = [{'_': 'data-article'}]
+        data = [self._article_meta, pxml]
+
+        xmlarticle = pipeline_xml.IsCitable()
+
+        raw, xml = xmlarticle.transform(data)
+
+        result = xml.find('./field[@name="is_citable"]').text
+
+        self.assertEqual('is_true', result)
+
     def test_xmljournalissn(self):
 
         pxml = ET.Element('doc')
