@@ -105,6 +105,8 @@ class UpdateSearch(object):
             pipeline_xml.SubjectAreas(),
             pipeline_xml.Networks(),
 
+            pipeline_xml.IsThematicCollection(),
+            pipeline_xml.IsSciELONetwork()
         ]
 
         if self.load_indicators is True:

@@ -11,6 +11,9 @@ CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')
 with open('networks_config.json') as json_file:
     NETWORKS_CONFIG = json.load(json_file)
 
+with open('thematic_collections.json') as json_file:
+    COLLECTION_CONFIG = json.load(json_file)
+
 
 """
 Full example output of this pipeline:
@@ -880,6 +883,36 @@ class Networks(plumber.Pipe):
             field.text = network
             field.set('name', 'network')
             xml.find('.').append(field)
+
+        return data
+class IsThematicCollection(plumber.Pipe):
+
+    def transform(self, data):
+        raw, xml = data
+
+        collection_acronym = raw.journal.collection_acronym
+        
+        is_thematic = "Sim" if collection_acronym in COLLECTION_CONFIG else "Não"
+
+        field = ET.Element('field')
+        field.text = str(is_thematic)
+        field.set('name', 'is_thematic_collection')
+        xml.find('.').append(field)
+
+        return data
+class IsSciELONetwork(plumber.Pipe):
+
+    def transform(self, data):
+        raw, xml = data
+
+        collection_acronym = raw.journal.collection_acronym
+        
+        is_scielo_network = "Não" if collection_acronym in COLLECTION_CONFIG else "Sim"
+
+        field = ET.Element('field')
+        field.text = str(is_scielo_network)
+        field.set('name', 'is_scielo_network')
+        xml.find('.').append(field)
 
         return data
 
