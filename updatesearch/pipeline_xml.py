@@ -891,15 +891,12 @@ class IsThematicCollection(plumber.Pipe):
         raw, xml = data
 
         collection_acronym = raw.journal.collection_acronym
+        classifications = COLLECTION_CONFIG.get(collection_acronym, [])
         
-        is_thematic = "Não"
-        for item in COLLECTION_CONFIG:
-            if collection_acronym in item and "thematic" in item[collection_acronym]:
-                is_thematic = "Sim"
-                break
+        is_thematic = "yes" if "thematic" in classifications else "no"
 
         field = ET.Element('field')
-        field.text = str(is_thematic)
+        field.text = is_thematic
         field.set('name', 'is_thematic_collection')
         xml.find('.').append(field)
 
@@ -912,15 +909,12 @@ class IsSciELONetwork(plumber.Pipe):
         raw, xml = data
 
         collection_acronym = raw.journal.collection_acronym
+        classifications = COLLECTION_CONFIG.get(collection_acronym, ["scielonetwork"])
         
-        is_scielo_network = "Sim"
-        for item in COLLECTION_CONFIG:
-            if collection_acronym in item and "scielonetwork" not in item[collection_acronym]:
-                is_scielo_network = "Não"
-                break
+        is_scielo_network = "yes" if "scielonetwork" in classifications else "no"
 
         field = ET.Element('field')
-        field.text = str(is_scielo_network)
+        field.text = is_scielo_network
         field.set('name', 'is_scielo_network')
         xml.find('.').append(field)
 
@@ -933,12 +927,7 @@ class NetworkClassification(plumber.Pipe):
         raw, xml = data
 
         collection_acronym = raw.journal.collection_acronym
-        classifications = ["scielonetwork"]
-
-        for item in COLLECTION_CONFIG:
-            if collection_acronym in item:
-                classifications = item[collection_acronym]
-                break
+        classifications = COLLECTION_CONFIG.get(collection_acronym, ["scielonetwork"])
 
         for classification in classifications:
             field = ET.Element('field')
