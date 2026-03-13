@@ -1,6 +1,6 @@
 [
-    "cic", 
-    "rve", 
-    "psi",
-    "spa"
+    {"cic": ["thematic"]},
+    {"rve": ["thematic"]},
+    {"psi": ["thematic"]},
+    {"spa": ["thematic", "scielonetwork"]}
 ]
