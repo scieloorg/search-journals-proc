@@ -917,6 +917,29 @@ class IsSciELONetwork(plumber.Pipe):
         return data
 
 
+class NetworkClassification(plumber.Pipe):
+
+    def transform(self, data):
+        raw, xml = data
+
+        collection_acronym = raw.journal.collection_acronym
+        classifications = []
+
+        if collection_acronym not in COLLECTION_CONFIG:
+            classifications.append("scielonetwork")
+
+        if collection_acronym in COLLECTION_CONFIG:
+            classifications.append("thematic")
+
+        for classification in classifications:
+            field = ET.Element('field')
+            field.text = classification
+            field.set('name', 'network_classification')
+            xml.find('.').append(field)
+
+        return data
+
+
 class TearDown(plumber.Pipe):
 
     def transform(self, data):
