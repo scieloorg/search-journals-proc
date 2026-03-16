@@ -1,17 +1,20 @@
 # coding: utf-8
 from lxml import etree as ET
 
-import plumber
 import json
+import os
+import plumber
 from citedby import client
 
 
 CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')
 
-with open('networks_config.json') as json_file:
+_CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(_CONFIG_DIR, 'networks_config.json')) as json_file:
     NETWORKS_CONFIG = json.load(json_file)
 
-with open('thematic_collections.json') as json_file:
+with open(os.path.join(_CONFIG_DIR, 'thematic_collections.json')) as json_file:
     COLLECTION_CONFIG = json.load(json_file)
 
 
