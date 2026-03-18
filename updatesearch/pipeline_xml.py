@@ -1,18 +1,21 @@
 # coding: utf-8
 from lxml import etree as ET
 
-import plumber
 import json
+import os
+import plumber
 from citedby import client
+
+from updatesearch.collection_classification import get_collection_classifications
 
 
 CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')
 
-with open('networks_config.json') as json_file:
+_CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(_CONFIG_DIR, 'networks_config.json')) as json_file:
     NETWORKS_CONFIG = json.load(json_file)
 
-with open('thematic_collections.json') as json_file:
-    COLLECTION_CONFIG = json.load(json_file)
 
 
 """
@@ -885,34 +888,21 @@ class Networks(plumber.Pipe):
             xml.find('.').append(field)
 
         return data
-class IsThematicCollection(plumber.Pipe):
+
+
+class NetworkClassification(plumber.Pipe):
 
     def transform(self, data):
         raw, xml = data
 
-        collection_acronym = raw.journal.collection_acronym
-        
-        is_thematic = "Sim" if collection_acronym in COLLECTION_CONFIG else "Não"
+        collection_acronym = raw.collection_acronym
+        classifications = get_collection_classifications(collection_acronym)
 
-        field = ET.Element('field')
-        field.text = str(is_thematic)
-        field.set('name', 'is_thematic_collection')
-        xml.find('.').append(field)
-
-        return data
-class IsSciELONetwork(plumber.Pipe):
-
-    def transform(self, data):
-        raw, xml = data
-
-        collection_acronym = raw.journal.collection_acronym
-        
-        is_scielo_network = "Não" if collection_acronym in COLLECTION_CONFIG else "Sim"
-
-        field = ET.Element('field')
-        field.text = str(is_scielo_network)
-        field.set('name', 'is_scielo_network')
-        xml.find('.').append(field)
+        for classification in classifications:
+            field = ET.Element('field')
+            field.text = classification
+            field.set('name', 'network_classification')
+            xml.find('.').append(field)
 
         return data
 

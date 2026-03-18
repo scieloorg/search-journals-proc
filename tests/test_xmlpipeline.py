@@ -1,5 +1,6 @@
 # coding: utf-8
 import unittest
+from unittest.mock import patch
 
 from lxml import etree as ET
 import json
@@ -8,6 +9,15 @@ import os
 from xylose.scielodocument import Article
 
 from updatesearch import pipeline_xml
+from updatesearch import collection_classification
+
+
+def _fake_collection_classifications(collection_acronym):
+    """Stub for NetworkClassification tests (avoids HTTP to ArticleMeta)."""
+    mapping = {"cic": ["thematic"], "spa": ["thematic", "scielonetwork"]}
+    if not collection_acronym:
+        return ["scielonetwork"]
+    return mapping.get(str(collection_acronym).lower(), ["scielonetwork"])
 
 
 class ExportTests(unittest.TestCase):
@@ -16,6 +26,10 @@ class ExportTests(unittest.TestCase):
         self._raw_json = json.loads(open(os.path.dirname(__file__)+'/fixtures/article_meta.json').read())
 
         self._article_meta = Article(self._raw_json)
+
+        _gcc = collection_classification.get_collection_config
+        if hasattr(_gcc, "cache_clear"):
+            _gcc.cache_clear()
 
     def test_xml_document_permission_pipe(self):
 
@@ -1048,3 +1062,90 @@ class ExportTests(unittest.TestCase):
             self.assertTrue(True)
         else:
             self.assertTrue(False)
+
+    def test_network_classification_default_scielonetwork(self):
+        """Unknown collection acronyms default to network_classification=scielonetwork."""
+        fakexylosearticle = Article({
+            'article': {},
+            'title': {},
+            'code': 'TEST-DEFAULT',
+            'collection': 'xxx',
+            'journal': {
+                'title': 'Test Journal',
+                'abbrev_title': 'Test J.',
+                'collection_acronym': 'xxx',
+                'scielo_issn': '0000-0000',
+            }
+        })
+        pxml = ET.Element('doc')
+        data = [fakexylosearticle, pxml]
+
+        with patch.object(
+            pipeline_xml,
+            "get_collection_classifications",
+            side_effect=_fake_collection_classifications,
+        ):
+            xmlarticle = pipeline_xml.NetworkClassification()
+            raw, xml = xmlarticle.transform(data)
+            classifications = sorted(
+                [i.text for i in xml.findall('./field[@name="network_classification"]')]
+            )
+            self.assertEqual(["scielonetwork"], classifications)
+
+    def test_network_classification_thematic_only(self):
+        """Thematic-only collection emits a single network_classification field."""
+        fakexylosearticle = Article({
+            'article': {},
+            'title': {},
+            'code': 'TEST-THEMATIC',
+            'collection': 'cic',
+            'journal': {
+                'title': 'Thematic Journal',
+                'abbrev_title': 'Them. J.',
+                'collection_acronym': 'cic',
+                'scielo_issn': '1111-1111',
+            }
+        })
+        pxml = ET.Element('doc')
+        data = [fakexylosearticle, pxml]
+
+        with patch.object(
+            pipeline_xml,
+            "get_collection_classifications",
+            side_effect=_fake_collection_classifications,
+        ):
+            xmlarticle = pipeline_xml.NetworkClassification()
+            raw, xml = xmlarticle.transform(data)
+            classifications = sorted(
+                [i.text for i in xml.findall('./field[@name="network_classification"]')]
+            )
+            self.assertEqual(["thematic"], classifications)
+
+    def test_network_classification_thematic_and_scielonetwork(self):
+        """Collection in both classes emits two network_classification values (e.g. spa)."""
+        fakexylosearticle = Article({
+            'article': {},
+            'title': {},
+            'code': 'TEST-SPA',
+            'collection': 'spa',
+            'journal': {
+                'title': 'SciELO Network + Thematic',
+                'abbrev_title': 'Spa J.',
+                'collection_acronym': 'spa',
+                'scielo_issn': '2222-2222',
+            }
+        })
+        pxml = ET.Element('doc')
+        data = [fakexylosearticle, pxml]
+
+        with patch.object(
+            pipeline_xml,
+            "get_collection_classifications",
+            side_effect=_fake_collection_classifications,
+        ):
+            xmlarticle = pipeline_xml.NetworkClassification()
+            raw, xml = xmlarticle.transform(data)
+            classifications = sorted(
+                [i.text for i in xml.findall('./field[@name="network_classification"]')]
+            )
+            self.assertEqual(["scielonetwork", "thematic"], classifications)
