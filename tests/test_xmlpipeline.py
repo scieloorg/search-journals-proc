@@ -8,6 +8,7 @@ import os
 from xylose.scielodocument import Article
 
 from updatesearch import pipeline_xml
+from updatesearch import collection_classification
 
 
 class ExportTests(unittest.TestCase):
@@ -16,6 +17,10 @@ class ExportTests(unittest.TestCase):
         self._raw_json = json.loads(open(os.path.dirname(__file__)+'/fixtures/article_meta.json').read())
 
         self._article_meta = Article(self._raw_json)
+
+        # Ensure tests don't depend on network or local working directory.
+        # Collection identifiers loader is cached.
+        collection_classification.get_collection_config.cache_clear()
 
     def test_xml_document_permission_pipe(self):
 
@@ -1068,6 +1073,12 @@ class ExportTests(unittest.TestCase):
             }
         })
 
+        collection_classification.get_collection_config = lambda: {
+            # no "xxx" entry -> default should be ["scielonetwork"]
+            "cic": ["thematic"],
+            "spa": ["thematic", "scielonetwork"],
+        }
+
         pxml = ET.Element('doc')
         data = [fakexylosearticle, pxml]
 
@@ -1110,6 +1121,11 @@ class ExportTests(unittest.TestCase):
             }
         })
 
+        collection_classification.get_collection_config = lambda: {
+            "cic": ["thematic"],
+            "spa": ["thematic", "scielonetwork"],
+        }
+
         pxml = ET.Element('doc')
         data = [fakexylosearticle, pxml]
 
@@ -1151,6 +1167,11 @@ class ExportTests(unittest.TestCase):
                 'scielo_issn': '2222-2222',
             }
         })
+
+        collection_classification.get_collection_config = lambda: {
+            "cic": ["thematic"],
+            "spa": ["thematic", "scielonetwork"],
+        }
 
         pxml = ET.Element('doc')
         data = [fakexylosearticle, pxml]

@@ -6,6 +6,8 @@ import os
 import plumber
 from citedby import client
 
+from updatesearch.collection_classification import get_collection_classifications
+
 
 CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')
 
@@ -14,8 +16,6 @@ _CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(_CONFIG_DIR, 'networks_config.json')) as json_file:
     NETWORKS_CONFIG = json.load(json_file)
 
-with open(os.path.join(_CONFIG_DIR, 'thematic_collections.json')) as json_file:
-    COLLECTION_CONFIG = json.load(json_file)
 
 
 """
@@ -894,7 +894,7 @@ class IsThematicCollection(plumber.Pipe):
         raw, xml = data
 
         collection_acronym = raw.journal.collection_acronym
-        classifications = COLLECTION_CONFIG.get(collection_acronym, [])
+        classifications = get_collection_classifications(collection_acronym)
         
         is_thematic = "yes" if "thematic" in classifications else "no"
 
@@ -912,7 +912,7 @@ class IsSciELONetwork(plumber.Pipe):
         raw, xml = data
 
         collection_acronym = raw.journal.collection_acronym
-        classifications = COLLECTION_CONFIG.get(collection_acronym, ["scielonetwork"])
+        classifications = get_collection_classifications(collection_acronym)
         
         is_scielo_network = "yes" if "scielonetwork" in classifications else "no"
 
@@ -930,7 +930,7 @@ class NetworkClassification(plumber.Pipe):
         raw, xml = data
 
         collection_acronym = raw.journal.collection_acronym
-        classifications = COLLECTION_CONFIG.get(collection_acronym, ["scielonetwork"])
+        classifications = get_collection_classifications(collection_acronym)
 
         for classification in classifications:
             field = ET.Element('field')
