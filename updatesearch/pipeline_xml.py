@@ -888,22 +888,6 @@ class Networks(plumber.Pipe):
             xml.find('.').append(field)
 
         return data
-class IsThematicCollection(plumber.Pipe):
-
-    def transform(self, data):
-        raw, xml = data
-
-        collection_acronym = raw.journal.collection_acronym
-        classifications = get_collection_classifications(collection_acronym)
-        
-        is_thematic = "yes" if "thematic" in classifications else "no"
-
-        field = ET.Element('field')
-        field.text = is_thematic
-        field.set('name', 'is_thematic_collection')
-        xml.find('.').append(field)
-
-        return data
 
 
 class NetworkClassification(plumber.Pipe):
@@ -911,7 +895,7 @@ class NetworkClassification(plumber.Pipe):
     def transform(self, data):
         raw, xml = data
 
-        collection_acronym = raw.journal.collection_acronym
+        collection_acronym = raw.collection_acronym
         classifications = get_collection_classifications(collection_acronym)
 
         for classification in classifications:

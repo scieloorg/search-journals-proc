@@ -1,5 +1,6 @@
 # coding: utf-8
 import unittest
+from unittest.mock import patch
 
 from lxml import etree as ET
 import json
@@ -11,6 +12,14 @@ from updatesearch import pipeline_xml
 from updatesearch import collection_classification
 
 
+def _fake_collection_classifications(collection_acronym):
+    """Stub for NetworkClassification tests (avoids HTTP to ArticleMeta)."""
+    mapping = {"cic": ["thematic"], "spa": ["thematic", "scielonetwork"]}
+    if not collection_acronym:
+        return ["scielonetwork"]
+    return mapping.get(str(collection_acronym).lower(), ["scielonetwork"])
+
+
 class ExportTests(unittest.TestCase):
 
     def setUp(self):
@@ -18,9 +27,9 @@ class ExportTests(unittest.TestCase):
 
         self._article_meta = Article(self._raw_json)
 
-        # Ensure tests don't depend on network or local working directory.
-        # Collection identifiers loader is cached.
-        collection_classification.get_collection_config.cache_clear()
+        _gcc = collection_classification.get_collection_config
+        if hasattr(_gcc, "cache_clear"):
+            _gcc.cache_clear()
 
     def test_xml_document_permission_pipe(self):
 
@@ -1055,16 +1064,12 @@ class ExportTests(unittest.TestCase):
             self.assertTrue(False)
 
     def test_network_classification_default_scielonetwork(self):
-        """
-        Collections not present in COLLECTION_CONFIG should default to
-        network_classification=["scielonetwork"], is_thematic_collection="no",
-        and is_scielo_network="yes".
-        """
+        """Unknown collection acronyms default to network_classification=scielonetwork."""
         fakexylosearticle = Article({
             'article': {},
             'title': {},
             'code': 'TEST-DEFAULT',
-            'collection': 'xxx',  # not in thematic_collections.json
+            'collection': 'xxx',
             'journal': {
                 'title': 'Test Journal',
                 'abbrev_title': 'Test J.',
@@ -1072,38 +1077,23 @@ class ExportTests(unittest.TestCase):
                 'scielo_issn': '0000-0000',
             }
         })
-
-        collection_classification.get_collection_config = lambda: {
-            # no "xxx" entry -> default should be ["scielonetwork"]
-            "cic": ["thematic"],
-            "spa": ["thematic", "scielonetwork"],
-        }
-
         pxml = ET.Element('doc')
         data = [fakexylosearticle, pxml]
 
-        # network_classification
-        xmlarticle = pipeline_xml.NetworkClassification()
-        raw, xml = xmlarticle.transform(data)
-        classifications = sorted(
-            [i.text for i in xml.findall('./field[@name="network_classification"]')]
-        )
-        self.assertEqual(['scielonetwork'], classifications)
-
-        # is_thematic_collection
-        xmlarticle = pipeline_xml.IsThematicCollection()
-        raw, xml = xmlarticle.transform(data)
-        is_thematic = xml.find('./field[@name="is_thematic_collection"]').text
-        self.assertEqual('no', is_thematic)
-
-        # is_scielo_network pipe removed; rely on network_classification instead
+        with patch.object(
+            pipeline_xml,
+            "get_collection_classifications",
+            side_effect=_fake_collection_classifications,
+        ):
+            xmlarticle = pipeline_xml.NetworkClassification()
+            raw, xml = xmlarticle.transform(data)
+            classifications = sorted(
+                [i.text for i in xml.findall('./field[@name="network_classification"]')]
+            )
+            self.assertEqual(["scielonetwork"], classifications)
 
     def test_network_classification_thematic_only(self):
-        """
-        Collections configured only as thematic (e.g., cic) should emit
-        network_classification=["thematic"], is_thematic_collection="yes",
-        and is_scielo_network="no".
-        """
+        """Thematic-only collection emits a single network_classification field."""
         fakexylosearticle = Article({
             'article': {},
             'title': {},
@@ -1116,37 +1106,23 @@ class ExportTests(unittest.TestCase):
                 'scielo_issn': '1111-1111',
             }
         })
-
-        collection_classification.get_collection_config = lambda: {
-            "cic": ["thematic"],
-            "spa": ["thematic", "scielonetwork"],
-        }
-
         pxml = ET.Element('doc')
         data = [fakexylosearticle, pxml]
 
-        # network_classification
-        xmlarticle = pipeline_xml.NetworkClassification()
-        raw, xml = xmlarticle.transform(data)
-        classifications = sorted(
-            [i.text for i in xml.findall('./field[@name="network_classification"]')]
-        )
-        self.assertEqual(['thematic'], classifications)
-
-        # is_thematic_collection
-        xmlarticle = pipeline_xml.IsThematicCollection()
-        raw, xml = xmlarticle.transform(data)
-        is_thematic = xml.find('./field[@name="is_thematic_collection"]').text
-        self.assertEqual('yes', is_thematic)
-
-        # is_scielo_network pipe removed; rely on network_classification instead
+        with patch.object(
+            pipeline_xml,
+            "get_collection_classifications",
+            side_effect=_fake_collection_classifications,
+        ):
+            xmlarticle = pipeline_xml.NetworkClassification()
+            raw, xml = xmlarticle.transform(data)
+            classifications = sorted(
+                [i.text for i in xml.findall('./field[@name="network_classification"]')]
+            )
+            self.assertEqual(["thematic"], classifications)
 
     def test_network_classification_thematic_and_scielonetwork(self):
-        """
-        Collections configured as both thematic and scielonetwork (e.g., spa)
-        should emit both values in network_classification and "yes" for the
-        two boolean flags.
-        """
+        """Collection in both classes emits two network_classification values (e.g. spa)."""
         fakexylosearticle = Article({
             'article': {},
             'title': {},
@@ -1159,27 +1135,17 @@ class ExportTests(unittest.TestCase):
                 'scielo_issn': '2222-2222',
             }
         })
-
-        collection_classification.get_collection_config = lambda: {
-            "cic": ["thematic"],
-            "spa": ["thematic", "scielonetwork"],
-        }
-
         pxml = ET.Element('doc')
         data = [fakexylosearticle, pxml]
 
-        # network_classification
-        xmlarticle = pipeline_xml.NetworkClassification()
-        raw, xml = xmlarticle.transform(data)
-        classifications = sorted(
-            [i.text for i in xml.findall('./field[@name="network_classification"]')]
-        )
-        self.assertEqual(['scielonetwork', 'thematic'], classifications)
-
-        # is_thematic_collection
-        xmlarticle = pipeline_xml.IsThematicCollection()
-        raw, xml = xmlarticle.transform(data)
-        is_thematic = xml.find('./field[@name="is_thematic_collection"]').text
-        self.assertEqual('yes', is_thematic)
-
-        # is_scielo_network pipe removed; rely on network_classification instead
+        with patch.object(
+            pipeline_xml,
+            "get_collection_classifications",
+            side_effect=_fake_collection_classifications,
+        ):
+            xmlarticle = pipeline_xml.NetworkClassification()
+            raw, xml = xmlarticle.transform(data)
+            classifications = sorted(
+                [i.text for i in xml.findall('./field[@name="network_classification"]')]
+            )
+            self.assertEqual(["scielonetwork", "thematic"], classifications)

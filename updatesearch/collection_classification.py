@@ -1,22 +1,10 @@
 import functools
-import json
 import os
 
 import requests
 
 
 _DEFAULT_COLLECTION_CLASSIFICATIONS = ["scielonetwork"]
-_CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
-
-
-def _load_collection_config_from_file():
-    """
-    Local fallback. Expected format:
-        { "<acron>": ["thematic", "scielonetwork", ...], ... }
-    """
-    with open(os.path.join(_CONFIG_DIR, "thematic_collections.json")) as json_file:
-        data = json.load(json_file)
-        return data if isinstance(data, dict) else {}
 
 
 def _load_collection_config_from_endpoint(url):
@@ -50,16 +38,13 @@ def _load_collection_config_from_endpoint(url):
 def get_collection_config():
     """
     Returns a dict {collection_acronym: [classifications]}.
-    Uses remote endpoint by default; falls back to local file if remote fails.
+    Fetched from ArticleMeta; failures propagate.
     """
     url = os.environ.get(
         "COLLECTION_IDENTIFIERS_URL",
         "https://articlemeta.scielo.org/api/v1/collection/identifiers/",
     )
-    try:
-        return _load_collection_config_from_endpoint(url)
-    except Exception:
-        return _load_collection_config_from_file()
+    return _load_collection_config_from_endpoint(url)
 
 
 def get_collection_classifications(collection_acronym):
@@ -69,4 +54,3 @@ def get_collection_classifications(collection_acronym):
         str(collection_acronym).lower(),
         list(_DEFAULT_COLLECTION_CLASSIFICATIONS),
     )
-
