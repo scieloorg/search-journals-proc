@@ -1096,11 +1096,7 @@ class ExportTests(unittest.TestCase):
         is_thematic = xml.find('./field[@name="is_thematic_collection"]').text
         self.assertEqual('no', is_thematic)
 
-        # is_scielo_network
-        xmlarticle = pipeline_xml.IsSciELONetwork()
-        raw, xml = xmlarticle.transform(data)
-        is_network = xml.find('./field[@name="is_scielo_network"]').text
-        self.assertEqual('yes', is_network)
+        # is_scielo_network pipe removed; rely on network_classification instead
 
     def test_network_classification_thematic_only(self):
         """
@@ -1143,11 +1139,7 @@ class ExportTests(unittest.TestCase):
         is_thematic = xml.find('./field[@name="is_thematic_collection"]').text
         self.assertEqual('yes', is_thematic)
 
-        # is_scielo_network
-        xmlarticle = pipeline_xml.IsSciELONetwork()
-        raw, xml = xmlarticle.transform(data)
-        is_network = xml.find('./field[@name="is_scielo_network"]').text
-        self.assertEqual('no', is_network)
+        # is_scielo_network pipe removed; rely on network_classification instead
 
     def test_network_classification_thematic_and_scielonetwork(self):
         """
@@ -1190,8 +1182,4 @@ class ExportTests(unittest.TestCase):
         is_thematic = xml.find('./field[@name="is_thematic_collection"]').text
         self.assertEqual('yes', is_thematic)
 
-        # is_scielo_network
-        xmlarticle = pipeline_xml.IsSciELONetwork()
-        raw, xml = xmlarticle.transform(data)
-        is_network = xml.find('./field[@name="is_scielo_network"]').text
-        self.assertEqual('yes', is_network)
+        # is_scielo_network pipe removed; rely on network_classification instead

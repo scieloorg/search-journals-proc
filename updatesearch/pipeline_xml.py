@@ -906,24 +906,6 @@ class IsThematicCollection(plumber.Pipe):
         return data
 
 
-class IsSciELONetwork(plumber.Pipe):
-
-    def transform(self, data):
-        raw, xml = data
-
-        collection_acronym = raw.journal.collection_acronym
-        classifications = get_collection_classifications(collection_acronym)
-        
-        is_scielo_network = "yes" if "scielonetwork" in classifications else "no"
-
-        field = ET.Element('field')
-        field.text = is_scielo_network
-        field.set('name', 'is_scielo_network')
-        xml.find('.').append(field)
-
-        return data
-
-
 class NetworkClassification(plumber.Pipe):
 
     def transform(self, data):
