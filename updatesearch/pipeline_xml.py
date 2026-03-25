@@ -6,7 +6,10 @@ import os
 import plumber
 from citedby import client
 
-from updatesearch.collection_classification import get_collection_classifications
+try:
+    from .collection_classification import get_collection_classifications
+except ImportError:
+    from collection_classification import get_collection_classifications
 
 
 CITEDBY = client.ThriftClient(domain='citedby.scielo.org:11610')

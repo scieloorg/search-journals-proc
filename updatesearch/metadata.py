@@ -19,7 +19,10 @@ if DEBUG:
 else:
     from articlemeta.client import ThriftClient as AMClient
 
-import pipeline_xml
+try:
+    from . import pipeline_xml
+except ImportError:
+    import pipeline_xml
 
 
 SOLR_URL = os.environ.get('SOLR_URL', 'http://127.0.0.1/solr')
