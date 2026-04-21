@@ -1,5 +1,5 @@
 requests
-lxml==4.5.0
+lxml==6.1.0
 raven==6.1.0
 articlemetaapi==1.23.0
 accessstatsapi==1.2.0
